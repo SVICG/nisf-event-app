@@ -1,5 +1,5 @@
 import React, { useReducer, useContext } from 'react'
-import { DISPLAY_ALERT } from './action'
+import { DISPLAY_ALERT, CLEAR_ALERT } from './action'
 // add useContext for on eless import -m not necesaary but good for bigger projects
 
 import reducer from './reducer'
@@ -17,6 +17,13 @@ const AppProvider = ({children}) => {
 
     const displayAlert = () => {
         dispatch({type:DISPLAY_ALERT})
+        clearAlert()
+    }
+
+    const clearAlert = () => {
+        setTimeout(()=>{
+            dispatch({type: CLEAR_ALERT})
+        }, 3000)
     }
 
     // children prop is everything rendered in between the opening and closing tag of the component 
