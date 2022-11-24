@@ -2,9 +2,10 @@ import express from 'express'
 const app = express()
 import dotenv from 'dotenv'
 dotenv.config()
-
 //reduces need for try/catch blocks
 import 'express-async-errors'
+
+import morgan from 'morgan'
 
 //db & auth
 import connectDB from './db/connect.js'
@@ -19,6 +20,10 @@ import eventsRouter from './routes/eventsRoutes.js'
 import notFoundMiddleware from './middleware/not-found.js'
 import errorHandlerMiddleware from './middleware/error-handler.js'
 
+//display method route and responsein console
+if(process.env.NODE_ENV !== 'prodution' ){
+    app.use(morgan('dev'))
+}
 app.use(express.json())
 
 app.get('/',(req, res) => {

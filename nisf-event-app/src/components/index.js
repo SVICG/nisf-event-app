@@ -1,6 +1,9 @@
 import FormRow from "./FormRow"
 import Logo from "./logo"
 import Alert from "./Alert"
+import Navbar from "./Navbar"
+import BigSidebar from "./BigSidebar"
+import SmallSidebar from "./SmallSidebar"
 
 
-export {Logo, FormRow, Alert}
+export {Logo, FormRow, Alert, Navbar, BigSidebar, SmallSidebar}
