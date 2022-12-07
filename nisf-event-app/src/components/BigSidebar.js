@@ -1,10 +1,20 @@
-import React from 'react'
+import { useAppContext } from '../context/appContext'
 import Wrapper from '../assets/wrappers/BigSidebar'
+import Logo from "./logo"
+import NavLinks from './NavLinks'
 
 const BigSidebar = () => {
+  const {showSidebar} = useAppContext()
   return (
     <Wrapper>
-    <h4>BigSidebar</h4>
+      <div className={showSidebar? 'sidebar-container' : 'sidebar-container show-sidebar' }>
+        <div class="content">
+          <header>
+            <Logo />
+          </header>
+          <NavLinks />
+        </div>
+      </div>
     </Wrapper>
   )
 }

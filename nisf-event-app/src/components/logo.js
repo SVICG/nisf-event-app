@@ -1,7 +1,7 @@
-import logo from '../assets/images/logo.svg'
+import logo from '../assets/images/logo.png'
 
 const Logo = () => {
-    return <img style={{maxHeight:'80%'}} src={logo} alt='nisf' className='Logo'/>
+    return <img  src={logo} alt='nisf' className='logo'/>
 }
-
+//style={{maxHeight:'80%'}}
 export default Logo;

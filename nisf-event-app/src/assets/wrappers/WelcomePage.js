@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 const Wrapper = styled.main`
-nav{
+nav {
     width: 90vw;
     max-width: 1120px;
     margin: 0 auto;
@@ -10,11 +10,16 @@ nav{
     align-items: center;
 }
 
+.logo {
+  max-height: 100px;
+ 
+}
+
 .page {
     min-height: calc(100vh - 6rem);
     display: grid;
     align-items: center;
-    margin-top: -3rem;
+    margin-top: -1rem;
   }
   h1 {
     font-weight: 700;

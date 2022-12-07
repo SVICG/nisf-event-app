@@ -22,12 +22,22 @@ html {
 /* colours */
 --main-color: #339989;
 --bkcolor: #E4F5F2;
+--dark-color:#e4f5f218;
+--font-color: #0d3517;
+--font-active: #13812e;
 --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+/* other */
+--nav-height: 17vh;
+--borderRadius: 8px;
 
 };
 
-body {
-  background-color: #000000;
+*{
+  font-family: var(--bodyFont);
+}
+
+body{
+  
   font-family: var(--bodyFont);
   font-weight: 400;
   line-height: 1.75;
@@ -43,10 +53,12 @@ p {
 
 a {
   font-family: var(--bodyFont);
+  text-decoration: none;
+  letter-spacing: 1px;
 
 }
 
-h1, h1, h3, h4, h5 {
+h1, h2, h3, h4, h5 {
   margin: 0;
   margin-bottom: 1.38rem;
   font-family: var(--headingFont);
@@ -64,6 +76,16 @@ h1 {
 h3 {
   font-size: 2rem;
   font-weight: 300;
+}
+
+h4{
+  font-size: 1.75rem;
+  font-weight: 200;
+}
+
+button {
+  line-height: 1.20;
+  font-family: var(--headingFont);
 }
 
 .img {
@@ -171,4 +193,8 @@ h3 {
   color: var(--red-dark);
   letter-spacing: var(--letterSpacing);
   text-transform: capitalize;
+}
+
+::placeholder {
+  font-family: var(--headingFont);
 }

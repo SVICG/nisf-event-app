@@ -4,15 +4,11 @@ import reducer from './reducer'
 import { 
     DISPLAY_ALERT, 
     CLEAR_ALERT, 
-    // REGISTER_USER_SUCCESS, 
-    // REGISTER_USER_BEGIN, 
-    // REGISTER_USER_ERROR, 
-    // LOGIN_USER_BEGIN, 
-    // LOGIN_USER_SUCCESS, 
-    // LOGIN_USER_ERROR,
     SETUP_USER_BEGIN,
     SETUP_USER_ERROR,
-    SETUP_USER_SUCCESS
+    SETUP_USER_SUCCESS,
+    TOGGLE_SIDEBAR,
+    LOGOUT_USER
  } from './action'
 // add useContext for on eless import -m not necesaary but good for bigger projects
 
@@ -29,6 +25,7 @@ const initialState = {
     token: token,
     userCounty: userCounty || '',
     eventCounty: userCounty || '',
+    showSidebar: false,
 
 }
 const AppContext = React.createContext()
@@ -123,10 +120,26 @@ const AppProvider = ({ children }) => {
         }
         clearAlert()
     };
+
+const toggleSidebar = () => {
+    dispatch({type: TOGGLE_SIDEBAR})
+}
+
+const logoutUser = () => {
+    dispatch({type: LOGOUT_USER})
+    removeUserFromLocalStorage();
+}
+
+const updateUser = async (currentUser) =>{
+    console.log(currentUser)
+}
+
     // children prop is everything rendered in between the opening and closing tag of the component 
-    return (<AppContext.Provider value={{ ...state, displayAlert, setupUser }}>{children}</AppContext.Provider>)
+    return (<AppContext.Provider value={{ ...state, displayAlert, setupUser, toggleSidebar, logoutUser, updateUser }}>{children}</AppContext.Provider>)
 
 }
+
+
 
 const useAppContext = () => {
     return useContext(AppContext)

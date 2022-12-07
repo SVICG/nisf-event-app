@@ -1,16 +1,15 @@
 import { 
     DISPLAY_ALERT, 
     CLEAR_ALERT, 
-    // REGISTER_USER_BEGIN, 
-    // REGISTER_USER_SUCCESS, 
-    // REGISTER_USER_ERROR, 
-    // LOGIN_USER_BEGIN,
-    // LOGIN_USER_ERROR,
-    // LOGIN_USER_SUCCESS,
     SETUP_USER_BEGIN,
     SETUP_USER_ERROR,
-    SETUP_USER_SUCCESS 
+    SETUP_USER_SUCCESS,
+    TOGGLE_SIDEBAR,
+    LOGOUT_USER
 } from "./action"
+
+//import initial state so you can update specific values with out having to keep adding properties everytime initialstate is updated in appContext
+import { initialState } from "./appContext";
 
 const reducer =  (state, action) =>{
     if(action.type === DISPLAY_ALERT) {
@@ -112,6 +111,22 @@ const reducer =  (state, action) =>{
         };
     }
 
+    if(action.type === TOGGLE_SIDEBAR) {
+        return{
+            ...state, 
+            showSidebar: !state.showSidebar, 
+        };
+    }
+
+    if(action.type === LOGOUT_USER){
+        return {
+            ...initialState,
+            user: null,
+            token: null,
+            userCounty: '',
+            eventCounty: '',
+        }
+    }
     throw new Error(`no such action : ${action.type}`)
 }
 

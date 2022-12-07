@@ -61,7 +61,25 @@ const login = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
-    res.send ('update user')
+   
+   const {email, name, lastName, county} = req.body
+   if(!email || !name || !lastName || !county) {
+    throw new BadRequestError('Please provide all values')
+   }
+
+   const user = await User.findOne({_id: req.user.userId});
+
+   user.email = email
+   user.name = name
+   user.lastName = lastName
+   user.county = county
+
+   await user.save()
+
+   const token = user.createJWT()
+   res.status(StatusCodes.OK).json({user, token, userCounty: user.county});
+    //console.log(req.user)
+  
 }
 
 export {register, login, updateUser}
