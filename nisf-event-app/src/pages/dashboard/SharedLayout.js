@@ -7,7 +7,7 @@ const SharedLayout = () => {
   return (
     <Wrapper>
 
-      <main class="dashboard">
+      <main className="dashboard">
 
         <SmallSidebar />
         <BigSidebar />

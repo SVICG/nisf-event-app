@@ -15,10 +15,10 @@ const Profile = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     //comment out while testing
-    // if(!name || !email || !lastName || !county) {
-    //   displayAlert()
-    //   return
-    // }
+    if(!name || !email || !lastName || !county) {
+      displayAlert()
+      return
+    }
     updateUser({name, email, lastName, county})
   }
 
@@ -27,7 +27,7 @@ const Profile = () => {
       <form className='form' onSubmit={handleSubmit}>
         <h3>Profile</h3>
         {showAlert && <Alert />}
-        <div class="form-center">
+        <div className="form-center">
           <FormRow 
             type='text' 
             name= 'name' 
