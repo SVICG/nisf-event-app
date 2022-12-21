@@ -14,8 +14,7 @@ const Profile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    //comment out while testing
-    if(!name || !email || !lastName || !county) {
+     if(!name || !email || !lastName || !county) {
       displayAlert()
       return
     }
