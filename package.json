@@ -23,9 +23,17 @@
     "express-async-errors": "^3.1.1",
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.4",
     "mongoose": "^6.7.1",
     "morgan": "^1.10.0",
+    "primeicons": "^6.0.1",
+    "primereact": "^8.7.3",
+    "react-date-range": "^1.4.0",
+    "react-day-picker": "^8.4.1",
     "react-icons": "^4.6.0",
+    "react-multi-date-picker": "^3.3.4",
+    "react-multiple-datepicker": "^0.1.0",
+    "react-places-autocomplete": "^7.3.0",
     "validator": "^13.7.0"
   }
 }

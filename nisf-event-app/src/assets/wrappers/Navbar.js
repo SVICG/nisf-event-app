@@ -7,6 +7,7 @@ display: flex;
 align-items: center;
 justify-content: center;
 background: var(--bkcolor);
+z-index:1000;
 
 .logo{
     display:flex;

@@ -1,11 +1,17 @@
 import React from 'react'
-import { FormRow, Alert } from '../../components'
+import { FormRow, FormRowSelect, Alert } from '../../components'
 import { useAppContext } from '../../context/appContext.js'
-import Wrapper from '../../assets/wrappers/DashboardFormPage.js'
+import Wrapper from '../../assets/wrappers/EventFormPage.js'
+import TextFormRow from '../../components/TextFormRow'
+import PlacesAutocomplete from 'react-places-autocomplete'
+
+
+
 
 const AddEvent = () => {
 
   const {
+    isLoading,
     isEditing,
     showAlert,
     displayAlert,
@@ -24,28 +30,62 @@ const AddEvent = () => {
     theme,
     themeOptions,
     status,
-    statusOptions
+    statusOptions,
+    handleChange,
+    clearValues,
+    createEvent,
+    editEvent
   } = useAppContext()
 
+
+  const [address, setLocation] = React.useState("");
+  
+  const searchOptions = {
+    componentRestrictions: { country: ['uk'] }
+    
+  }
 
   const handleEventInput = (e) => {
     const name = e.target.name
     const value = e.target.value
-    console.log(`${name}: ${value}`)
+    handleChange({ name, value })
   }
 
-  const handleSubmit =(e) => {
+
+
+  // Define the handleDayClick function
+  // const handleDayClick = (e) => {
+  //   // Do something with the selected day
+  //   console.log(e);
+  // }
+  const handleSelect = async value => {
+    
+    const name = 'location'
+    handleChange({ name, value })
+    console.log(value)
+    
+  }
+
+
+  const handleSubmit = (e) => {
     e.preventDefault()
-    if(!eventTitle || !capacity || !eventType || !description || !startTime || !admissionPrice || !theme) {
+    if (!eventTitle || !capacity || !eventType || !description || !startTime || !admissionPrice || !theme) {
       displayAlert()
       return
     }
-
-    console.log('create job')
+    if (isEditing) {
+      editEvent()
+      return
+    }
+    createEvent()
   }
 
+
   return (
+
+
     <Wrapper>
+
       <form className='form'>
         <h3>{isEditing ? 'edit event' : 'add event'}</h3>
         {showAlert && <Alert />}
@@ -59,8 +99,47 @@ const AddEvent = () => {
             handleChange={handleEventInput}
           />
           {/* location */}
+
+          <PlacesAutocomplete
+          
+          value={address}
+          name="location"
+          onChange={setLocation}
+          onSelect={handleSelect}
+          searchOptions={searchOptions}
+        
+          >
+            {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
+              
+            <div>
+              <label htmlFor="location" className='form-label'>Search Location</label>
+              
+              <input {...getInputProps({placeholder:"Enter the event address"})}/>
+              <div>
+              <p>{address.description}</p>
+                {loading ? <div>...loading</div> : null}
+
+                {suggestions.map ((suggestion) => {
+                  const style = {
+                    backgroundColor: suggestion.active ? "#41b6e6" : "fff"
+                  }
+
+                  console.log(suggestion);
+
+                  return <div {...getSuggestionItemProps(suggestion,{style} )} key={suggestion.placeId}>
+                    {suggestion.description}
+                    
+                    </div>
+                })}
+                  
+
+              </div>
+
+            </div>)}
+          </PlacesAutocomplete>
           <FormRow
-            type="text"
+
+            // type="text"
             name="location"
             value={location}
             handleChange={handleEventInput}
@@ -73,29 +152,32 @@ const AddEvent = () => {
             handleChange={handleEventInput}
           />
           {/* eventType */}
-          <FormRow
-            type="text"
-            label="Event Type"
-            name="eventType"
+          <FormRowSelect
+            name="event Type"
             value={eventType}
             handleChange={handleEventInput}
+            list={eventTypeOptions}
           />
           {/* target audience*/}
-          <FormRow
-            type="text"
-            label="Target Audeince"
-            name="targetAudience"
+          <FormRowSelect
+            name="target Audience"
             value={targetAudience}
             handleChange={handleEventInput}
+            list={targetAudienceOptions}
           />
 
           {/* description */}
-          <FormRow
+          <TextFormRow
             type="text"
             name="description"
             value={description}
             handleChange={handleEventInput}
+
           />
+
+
+          {/* date updated*/}
+
 
           {/* date */}
           <FormRow
@@ -106,16 +188,16 @@ const AddEvent = () => {
           />
           {/* Start Time */}
           <FormRow
-            type="text"
+            type="time"
             label="Start Time"
-            name="Start Time"
-            value={endTime}
+            name="startTime"
+            value={startTime}
             handleChange={handleEventInput}
           />
 
           {/* endTime */}
           <FormRow
-            type="text"
+            type="time"
             label="End Time"
             name="endTime"
             value={endTime}
@@ -131,41 +213,45 @@ const AddEvent = () => {
           />
 
           {/* theme */}
-          <FormRow
-            type="text"
+          <FormRowSelect
             name="theme"
             value={theme}
             handleChange={handleEventInput}
+            list={themeOptions}
           />
 
+          {/* event status */}
+          <FormRowSelect
+            name="status"
+            value={status}
+            handleChange={handleEventInput}
+            list={statusOptions}
+          />
         </div>
-      
-{/* event type */}
 
-<div class="form-row">
 
-<label htmlFor='eventType' className='form-label'>
-  event type
-</label>
-<select name="eventType" id={eventType} onChange ={handleEventInput} className='form-select'>
-  {eventTypeOptions.map((itemValue, index) => {
-    return <option key={index} value = {itemValue}>
-      {itemValue}
-    </option>
-  })}
-</select>
-</div>
 
-{/* event status */}
+        <div className='btn-container'>
+          <button type='submit' className='btn btn-block submit-btn' onClick={handleSubmit} disabled={isLoading}>
+            Submit
+          </button>
+          <button className='btn btn-block clear-btn' onClick={(e) => {
+            e.preventDefault()
+            clearValues()
+          }}>
+            Clear
+          </button>
+        </div>
+      </form>
 
-<div className='btn-container'>
-  <button type='submit' className='btn btn-block submit-btn' onClick={handleSubmit}>
-    Submit
-  </button>
-</div>
-</form>
     </Wrapper>
+
   )
+
+
 }
+
+
+
 
 export default AddEvent

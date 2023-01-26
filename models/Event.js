@@ -6,7 +6,7 @@ const EventSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide an event name'],
         minlength: 2,
-        maxlength: 50,
+        maxlength: 200,
         trim:true,
         default:'Add title'
     },
@@ -14,7 +14,7 @@ const EventSchema = new mongoose.Schema({
     location: { 
         type: String,
         required: [true, 'Please provide an event location'],
-        unique: true,
+        unique: false,
     },
 
     capacity: { 
@@ -37,22 +37,23 @@ const EventSchema = new mongoose.Schema({
     description: { 
         type: String,
         minlength: 2,
-        maxlength: 20,
+        maxlength: 1000,
         trim:true,
         default: 'Last name'
     },
 
-    date: {
-        type:Date
+    date: { 
+        type: Date,
+    
     },
    
     startTime: { 
-        type: Date,
+        type: String,
     
     },
 
     endTime: { 
-        type: Date,
+        type: String,
     
     },
 
@@ -64,7 +65,7 @@ const EventSchema = new mongoose.Schema({
 
     theme: {
         type: String,
-        enum:['Mind & Body', 'Tech & Innovation', 'Engineering & Robots', 'Food for Thought', 'Science Communication', 'Art & Science', 'History & Science', 'Maths & Physics', 'Environment & Nature', 'Creat. Make. Play.', 'Space']
+        enum:['Mind & Body', 'Tech & Innovation', 'Engineering & Robots', 'Food for Thought', 'Science Communication', 'Art & Science', 'History & Science', 'Maths & Physics', 'Environment & Nature', 'Create. Make. Play.', 'Space']
     },
 
     status: {

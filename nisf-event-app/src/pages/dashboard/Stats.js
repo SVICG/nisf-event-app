@@ -1,9 +1,32 @@
-import React from 'react'
+import { useEffect } from 'react'
+import { StatsContainer, Loading, ChartsContainer } from '../../components'
+import { useAppContext } from '../../context/appContext'
+
+
 
 const Stats = () => {
+  const { showStats, isLoading, weeklySubmissions } = useAppContext()
+
+  useEffect (()=> {
+    showStats()
+  }, [])
+
+  if(isLoading){
+    return <Loading center />
+  }
+
   return (
-    <h1>Stats</h1>
+    <>
+    <StatsContainer />
+
+    {/* only show if not at 0 litsings */}
+    {weeklySubmissions.length > 0 && <ChartsContainer />}
+    
+    </>
   )
+
 }
+
+
 
 export default Stats

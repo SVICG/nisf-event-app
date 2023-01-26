@@ -20,6 +20,7 @@ import eventsRouter from './routes/eventsRoutes.js'
 import notFoundMiddleware from './middleware/not-found.js'
 import errorHandlerMiddleware from './middleware/error-handler.js'
 
+
 //display method route and responsein console
 if(process.env.NODE_ENV !== 'prodution' ){
     app.use(morgan('dev'))
@@ -35,7 +36,7 @@ app.get('/api/v1',(req, res) => {
 })
 
 app.use('/api/v1/auth', authRouter)
-app.use('/api/v1/events', eventsRouter)
+app.use('/api/v1/events',authRouter, eventsRouter)
 
 //looking for all htttp
 app.use(notFoundMiddleware)

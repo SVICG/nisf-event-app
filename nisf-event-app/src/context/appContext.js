@@ -1,6 +1,7 @@
-import React, { useReducer, useContext } from 'react'
+import React, { useReducer, useContext, } from 'react'
 import axios from 'axios'
 import reducer from './reducer'
+
 import {
   DISPLAY_ALERT,
   CLEAR_ALERT,
@@ -11,7 +12,21 @@ import {
   LOGOUT_USER,
   UPDATE_USER_BEGIN,
   UPDATE_USER_SUCCESS,
-  UPDATE_USER_ERROR
+  UPDATE_USER_ERROR,
+  HANDLE_CHANGE,
+  CLEAR_VALUES,
+  CREATE_EVENT_BEGIN,
+  CREATE_EVENT_ERROR,
+  CREATE_EVENT_SUCCESS,
+  GET_EVENT_BEGIN,
+  GET_EVENT_SUCCESS,
+  SET_EDIT_EVENT,
+  DELETE_EVENT_BEGIN,
+  EDIT_EVENT_BEGIN,
+  EDIT_EVENT_SUCCESS,
+  EDIT_EVENT_ERROR,
+  SHOW_STATS_BEGIN,
+  SHOW_STATS_SUCCESS
 } from './action'
 // add useContext for on eless import -m not necesaary but good for bigger projects
 
@@ -20,7 +35,7 @@ const user = localStorage.getItem('user')
 const county = localStorage.getItem('county')
 
 
-//set up jobs globally to enable editing & grab values
+//set up jobs globally to enableboth adding, editing & grabing values
 const initialState = {
   isLoading: false,
   showAlert: false,
@@ -32,22 +47,29 @@ const initialState = {
   showSidebar: false,
   isEditing: false,
   editEventId: '',
-  location: county || '',
-  eventTitle:'',
-  capacity:0,
+  location: '',
+  setLocation:  county || '',
+  eventTitle: '',
+  capacity: 0,
   eventTypeOptions: ['Lecture/Talk', 'Family Theate Show', 'Outdoor Tour / Activity', 'Film', 'Drop-in Exhibition', 'Panel Discussion', 'Workshop Event', 'Digital Event', 'Other'],
-  eventType:'Lecture/Talk',
+  eventType: 'Lecture/Talk',
   targetAudienceOptions: ['0-3', '3-6', '6-10', '10-14', '14-18', '18+', 'All Ages'],
   targetAudience: 'All Ages',
-  description:'',
-  date:'',
-  startTime:'',
+  description: '',
+  date: '',
+  startTime: '',
   endTime: '',
   admissionPrice: '',
-  themeOptions:['Mind & Body', 'Tech & Innovation', 'Engineering & Robots', 'Food for Thought', 'Science Communication', 'Art & Science', 'History & Science', 'Maths & Physics', 'Environment & Nature', 'Creat. Make. Play.', 'Space'],
-  theme:'Mind & Body',
-  statusOptions:['approved', 'pending', 'declined'],
-  status:'Pending'
+  themeOptions: ['Mind & Body', 'Tech & Innovation', 'Engineering & Robots', 'Food for Thought', 'Science Communication', 'Art & Science', 'History & Science', 'Maths & Physics', 'Environment & Nature', 'Creat. Make. Play.', 'Space'],
+  theme: 'Mind & Body',
+  statusOptions: ['approved', 'pending', 'declined'],
+  status: 'pending',
+  events: [],
+  totalEvents: 0,
+  numOfPages: 1,
+  page: 1,
+  stats:{},
+  weeklySubmissions:[],
 }
 const AppContext = React.createContext()
 
@@ -160,8 +182,157 @@ const AppProvider = ({ children }) => {
 
   }
 
+
+  const handleChange = ({ name, value }) => {
+    dispatch({ type: HANDLE_CHANGE, payload: { name, value } })
+  }
+
+  const clearValues = () => {
+    dispatch({
+      type: CLEAR_VALUES
+    })
+  }
+
+  const createEvent = async () => {
+    dispatch({ type: CREATE_EVENT_BEGIN })
+    try {
+      const {
+        eventTitle,
+        location,
+        capacity,
+        eventType,
+        targetAudience,
+        description,
+        date,
+        startTime,
+        endTime,
+        admissionPrice,
+        theme,
+        status } = state
+
+      await authFetch.post('/events', {
+        eventTitle,
+        location,
+        capacity,
+        eventType,
+        targetAudience,
+        description,
+        date,
+        startTime,
+        endTime,
+        admissionPrice,
+        theme,
+        status
+      })
+      dispatch({ type: CREATE_EVENT_SUCCESS })
+      dispatch({ type: CLEAR_VALUES })
+    } catch (error) {
+      if (error.response === 401) return
+      dispatch({
+        type: CREATE_EVENT_ERROR,
+        payload: { msg: error.response.data.msg }
+      })
+    }
+
+  }
+
+  const getEvents = async () => {
+    let url = `/events`
+
+    dispatch({ type: GET_EVENT_BEGIN })
+    try {
+      const { data } = await authFetch(url);
+      const { events, totalEvents, numOfPages } = data
+      dispatch({
+        type: GET_EVENT_SUCCESS,
+        payload: {
+          events,
+          totalEvents,
+          numOfPages,
+        }
+      })
+    } catch (error) {
+      console.log(error.response);
+      // logoutUser()
+    }
+    clearAlert();
+  }
+
+  const setEditEvent = (id) => {
+    dispatch({ type: SET_EDIT_EVENT, payload: { id } })
+  }
+
+  const editEvent = async () => {
+    dispatch({ type: EDIT_EVENT_BEGIN })
+
+    try {
+      const {
+        eventTitle,
+        location,
+        capacity,
+        eventType,
+        targetAudience,
+        description,
+        date,
+        startTime,
+        endTime,
+        admissionPrice,
+        theme,
+        status } = state
+
+      await authFetch.patch(`/events/${state.editEventId}`, {
+        eventTitle,
+        location,
+        capacity,
+        eventType,
+        targetAudience,
+        description,
+        date,
+        startTime,
+        endTime,
+        admissionPrice,
+        theme,
+        status
+      })
+      dispatch({ type: EDIT_EVENT_SUCCESS })
+      dispatch({ type: CLEAR_VALUES })
+    } catch (error) {
+      if (error.response.status === 401) {
+        dispatch({ type: EDIT_EVENT_ERROR, payload: { msg: error.response.data.msg } })
+      }
+    }
+    clearAlert();
+  }
+
+
+  const deleteEvent = async (eventId) => {
+    dispatch({ type: DELETE_EVENT_BEGIN })
+    try {
+      await authFetch.delete(`/events/${eventId}`)
+      getEvents()
+    } catch (error) {
+      console.log(error.response)
+    }
+  }
+
+  const showStats = async () => {
+    dispatch({type:SHOW_STATS_BEGIN})
+    try {
+      const {data} = await authFetch('/events/stats')
+      dispatch({type:SHOW_STATS_SUCCESS, payload: {
+        stats: data.defaultStats,
+        weeklySubmissions: data.weeklySubmissions,
+      }}
+      )
+    } catch (error) {
+      console.log(error.response)
+      // logoutUser()
+    }
+    clearAlert()
+  }
+
   // children prop is everything rendered in between the opening and closing tag of the component 
-  return (<AppContext.Provider value={{ ...state, displayAlert, setupUser, toggleSidebar, logoutUser, updateUser }}>{children}</AppContext.Provider>)
+  return (<AppContext.Provider value={{ ...state, displayAlert, setupUser, toggleSidebar, logoutUser, updateUser, handleChange, clearValues, createEvent, getEvents, setEditEvent, deleteEvent, editEvent, showStats }}>{children}</AppContext.Provider>)
 
 }
 

@@ -1,8 +1,13 @@
-import React from 'react'
+
+import { EventsContainer, SearchContainer } from '../../components'
 
 const AllEvents = () => {
   return (
-    <h1>All Events</h1>
+    <>
+      <SearchContainer />
+      <EventsContainer />
+      
+    </>
   )
 }
 
