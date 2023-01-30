@@ -34,6 +34,7 @@
     "react-multi-date-picker": "^3.3.4",
     "react-multiple-datepicker": "^0.1.0",
     "react-places-autocomplete": "^7.3.0",
+    "recharts": "^2.3.2",
     "validator": "^13.7.0"
   }
 }

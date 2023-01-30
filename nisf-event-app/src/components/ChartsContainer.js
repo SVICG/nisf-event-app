@@ -1,9 +1,26 @@
-import React from 'react'
+import React, {useState} from 'react'
+import BarChart from './BarChart'
+import AreaChart from './AreaChart'
+import { useAppContext } from '../context/appContext'
+import Wrapper from '../assets/wrappers/ChartsContainer'
 
 const ChartsContainer = () => {
+  
+  const[barChart, setBarChart] = useState(true)
+  const {weeklySubmissions:data} = useAppContext()
+  
   return (
-    <div><h1>Charts Conatiner</h1></div>
+<Wrapper>
+  <h4>Weekly Submissions</h4>
+  <button type='button' onClick={()=>setBarChart(!barChart)}>
+    {barChart ? 'Area Chart' : 'Bar Chart'}    
+  </button>
+  {barChart ? <BarChart data= {data} /> : <AreaChart data={data} />}
+  
+  
+</Wrapper>
   )
+ 
 }
 
 export default ChartsContainer

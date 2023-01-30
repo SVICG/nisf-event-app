@@ -3,6 +3,8 @@ import { StatusCodes } from 'http-status-codes'
 import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors/index.js'
 import checkPermissions from '../utils/checkPermissions.js';
 import mongoose from 'mongoose';
+import moment from 'moment';
+
 
 const createEvent = async (req, res) => {
     const { eventTitle, capacity, eventType, targetAudience, description, date, startTime, endTime, admissionPrice, theme } = req.body;
@@ -87,7 +89,25 @@ const showStats = async (req, res) => {
         declined: stats.declined || 0,
 
     }
-    let weeklySubmissions = []
+
+    let weeklySubmissions = await Event.aggregate([
+        { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+        { $group: { 
+            _id: { year: {$year: '$createdAt'}, month: {$month:'$createdAt'}, week: { $week: '$createdAt' } },
+            count: { $sum: 1},
+        },
+        },
+        //sort by latest event first
+        {$sort:{'_id.year':-1, '_id.week':-1}},
+        {$limit:6}
+    ])
+
+    weeklySubmissions = weeklySubmissions.map((item) => {
+        const {_id:{year, week, month}, count} = item
+        const date = moment().month(month -1).year(year).week(week).format('[Week] w[,] MMM YYYY')
+        return {date, count}
+    })
+    .reverse()
 
     res.status(StatusCodes.OK).json({ defaultStats, weeklySubmissions })
 }
