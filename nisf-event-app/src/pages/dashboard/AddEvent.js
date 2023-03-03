@@ -4,8 +4,15 @@ import { useAppContext } from '../../context/appContext.js'
 import Wrapper from '../../assets/wrappers/EventFormPage.js'
 import TextFormRow from '../../components/TextFormRow'
 import PlacesAutocomplete from 'react-places-autocomplete'
+import DatePicker from "react-multi-date-picker"
+import DatePanel from "react-multi-date-picker/plugins/date_panel"
+import { format, isSameDay, setDate } from 'date-fns';
+// import { DayPicker } from 'react-day-picker';
+// import 'react-day-picker/dist/style.css';
 
-
+// function Component() {
+//   return <DayPicker />;
+// }
 
 
 const AddEvent = () => {
@@ -39,10 +46,19 @@ const AddEvent = () => {
 
 
   const [address, setLocation] = React.useState("");
-  
+  const [values, setValue] = React.useState([])
+
+  const handleDates = (value) => {
+    const name = 'date'
+    
+    setValue(value)
+    // handleChange({ name, values })
+    console.log(values)
+  }
+
   const searchOptions = {
     componentRestrictions: { country: ['uk'] }
-    
+
   }
 
   const handleEventInput = (e) => {
@@ -51,19 +67,11 @@ const AddEvent = () => {
     handleChange({ name, value })
   }
 
-
-
-  // Define the handleDayClick function
-  // const handleDayClick = (e) => {
-  //   // Do something with the selected day
-  //   console.log(e);
-  // }
   const handleSelect = async value => {
-    
     const name = 'location'
     handleChange({ name, value })
     console.log(value)
-    
+
   }
 
 
@@ -101,41 +109,41 @@ const AddEvent = () => {
           {/* location */}
 
           <PlacesAutocomplete
-          
-          value={address}
-          name="location"
-          onChange={setLocation}
-          onSelect={handleSelect}
-          searchOptions={searchOptions}
-        
+
+            value={address}
+            name="location"
+            onChange={setLocation}
+            onSelect={handleSelect}
+            searchOptions={searchOptions}
+
           >
-            {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
-              
-            <div>
-              <label htmlFor="location" className='form-label'>Search Location</label>
-              
-              <input {...getInputProps({placeholder:"Enter the event address"})}/>
+            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+
               <div>
-              <p>{address.description}</p>
-                {loading ? <div>...loading</div> : null}
+                <label htmlFor="location" className='form-label'>Search Location</label>
 
-                {suggestions.map ((suggestion) => {
-                  const style = {
-                    backgroundColor: suggestion.active ? "#41b6e6" : "fff"
-                  }
+                <input {...getInputProps({ placeholder: "Enter the event address" })} />
+                <div>
+                  <p>{address.description}</p>
+                  {loading ? <div>...loading</div> : null}
 
-                  console.log(suggestion);
+                  {suggestions.map((suggestion) => {
+                    const style = {
+                      backgroundColor: suggestion.active ? "#41b6e6" : "fff"
+                    }
 
-                  return <div {...getSuggestionItemProps(suggestion,{style} )} key={suggestion.placeId}>
-                    {suggestion.description}
-                    
+                    // console.log(suggestion);
+
+                    return <div {...getSuggestionItemProps(suggestion, { style })} key={suggestion.placeId}>
+                      {suggestion.description}
+
                     </div>
-                })}
-                  
+                  })}
 
-              </div>
 
-            </div>)}
+                </div>
+
+              </div>)}
           </PlacesAutocomplete>
           <FormRow
 
@@ -177,15 +185,26 @@ const AddEvent = () => {
 
 
           {/* date updated*/}
+          <DatePicker
+            multiple
+            plugins={[
+              <DatePanel />
+             ]}
+            value={values}
+            name="date"
+            onChange={handleDates}
+            minDate="2023/02/16"
+            maxDate="2023/02/26"
 
+          />
 
-          {/* date */}
+          {/* date
           <FormRow
             type="date"
             name="date"
             value={date}
             handleChange={handleEventInput}
-          />
+          /> */}
           {/* Start Time */}
           <FormRow
             type="time"

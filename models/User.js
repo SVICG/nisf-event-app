@@ -47,6 +47,11 @@ const UserSchema = new mongoose.Schema({
         default: 'County'
     },
 
+    isAdmin: {
+        type: Boolean,
+        
+    }
+
 })
 
 //hash user password

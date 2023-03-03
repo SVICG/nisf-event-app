@@ -25,7 +25,7 @@ const EventSchema = new mongoose.Schema({
 
     eventType: {
         type: String,
-        enum:['Lecture/Talk', 'Family Theate Show', 'Outdoor Tour / Activity', 'Film', 'Drop-in Exhibition', 'Panel Discussion', 'Workshop Event', 'Digital Event', 'Other']
+        enum:['Lecture/Talk', 'Family Theatre Show', 'Outdoor Tour / Activity', 'Film', 'Drop-in Exhibition', 'Panel Discussion', 'Workshop Event', 'Digital Event', 'Other']
     },
 
     targetAudience: {
@@ -42,10 +42,10 @@ const EventSchema = new mongoose.Schema({
         default: 'Last name'
     },
 
-    date: { 
+    date:[ { 
         type: Date,
     
-    },
+    }],
    
     startTime: { 
         type: String,

@@ -1,7 +1,7 @@
 
 
 
-const FormRow = ({type,name,value, handleChange, labelText}) => {
+const FormRow = ({type, name, value, handleChange, labelText}) => {
   return (
     <div className='form-row'>
     <label htmlFor={name} className='form-label'>{labelText || name}</label>
@@ -10,6 +10,7 @@ const FormRow = ({type,name,value, handleChange, labelText}) => {
         value={value} 
         name={name}
         onChange={handleChange} 
+        autoComplete='on'
         className='form-input' />
 
 </div>

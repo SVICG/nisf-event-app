@@ -20,12 +20,14 @@ import eventsRouter from './routes/eventsRoutes.js'
 import notFoundMiddleware from './middleware/not-found.js'
 import errorHandlerMiddleware from './middleware/error-handler.js'
 
+import cookieParser from 'cookie-parser'
 
 //display method route and responsein console
 if(process.env.NODE_ENV !== 'prodution' ){
     app.use(morgan('dev'))
 }
-app.use(express.json())
+app.use(express.json());
+app.use(cookieParser());
 
 app.get('/',(req, res) => {
     res.json({msg: 'Welcome'})

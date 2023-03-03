@@ -4,6 +4,7 @@ import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors/
 import checkPermissions from '../utils/checkPermissions.js';
 import mongoose from 'mongoose';
 import moment from 'moment';
+import { query } from 'express';
 
 
 const createEvent = async (req, res) => {
@@ -21,11 +22,72 @@ const createEvent = async (req, res) => {
 }
 
 
+
 const getAllEvents = async (req, res) => {
-    const events = await Event.find({ createdBy: req.user.userId })
-    res.status(StatusCodes.OK).json({ events, totalEvents: events.length, numOfPages: 1 })
-    res.send('get all events')
+    const allEvents = await Event.find({})
+    const {status, eventType, date, theme, targetAudience, sort, search } = req.query
+    //return all jobs that meet the 'status - query'
+    const admin = req.user.isAdmin
+  
+    const queryObject = {
+     
+        createdBy: req.user.userId
+    }
+    
+    if(admin){
+        const queryObject = all
+  
+    }
+
+
+
+
+    if(status && status !== 'all'){
+        queryObject.status = status
+    }
+    if(eventType && eventType !== 'all') {
+        queryObject.eventType = eventType
+    }
+    if(theme && theme !== 'all') {
+        queryObject.theme =theme 
+    }
+    if(targetAudience && targetAudience !== 'all') {
+        queryObject.targetAudience = targetAudience
+    }
+    if(search){
+        queryObject.eventTitle = { $regex: search, $options: 'i'}
+    }
+    //
+    console.log(queryObject)
+    let results = Event.find(queryObject)
+
+    if(sort === 'newest') {
+        results = results.sort('-createdAt')
+    }
+
+    if(sort === 'oldest') {
+        results = results.sort('createdAt')
+    }
+
+    //pagination - if page is not provided have 1 as default
+    const page = Number(req.query.page) || 1
+    const limit = Number(req.query.limit) || 20
+    //calculate how many items to skip
+    const skip = (page -1) * limit
+
+    results = results.skip(skip).limit(limit)
+
+    const events = await results
+
+    const totalEvents = await Event.countDocuments(queryObject)
+    const numOfPages = Math.ceil(totalEvents/limit)
+
+    res.status(StatusCodes.OK).json({ events, totalEvents: events.length, numOfPages })
+    // res.send('get all events')
 }
+
+
+
 const updateEvent = async (req, res) => {
     // use alias for id
     const { id: eventId } = req.params
@@ -113,4 +175,5 @@ const showStats = async (req, res) => {
 }
 
 
-export { createEvent, deleteEvent, getAllEvents, updateEvent, showStats }
+
+export { createEvent, deleteEvent, getAllEvents, updateEvent, showStats}

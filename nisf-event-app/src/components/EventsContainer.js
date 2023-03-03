@@ -3,49 +3,51 @@ import Wrapper from "../assets/wrappers/EventsContainer"
 import { useAppContext } from "../context/appContext"
 import Event from "./Event"
 import Loading from "./Loading"
+import PageBtnContainer from "./PageBtnContainer"
 
 
 const EventsContainer = () => {
-const {getEvents, events, isLoading, page, totalEvents} = useAppContext()
+    const { getEvents, events, isLoading, page, totalEvents, search, searchStatus, searchType, sort, numOfPages } = useAppContext()
 
-useEffect(() => {
+    useEffect(() => {
 
-    getEvents()
-}, [])
+        getEvents()
+        // eslint-disable-next-line
+    }, [page, search, searchStatus, searchType, sort])
 
-if(isLoading){
-  return (
-    <Loading center />
-  )
-}
+    if (isLoading) {
+        return (
+            <Loading center />
+        )
+    }
 
-if (events.length === 10) {
+    if (events.length === 10) {
+        return (
+
+            <h2>No events</h2>
+
+        )
+    }
+
     return (
-    
-        <h2>No events</h2>
-   
+
+        <Wrapper>
+
+            <h5>
+                {totalEvents} event{events.length > 1 && 's'} found
+            </h5>
+
+            <div className="events">
+                {events.map((event) => {
+
+                    return <Event key={event._id} {...event} />
+                })}
+
+            </div>
+            {numOfPages > 1 && <PageBtnContainer />}
+
+        </Wrapper>
     )
-}
-
-return ( 
-
-<Wrapper>
-
-<h5>
-    {totalEvents} event{events.length >1 && 's'} found
-</h5>
-
-<div className="events">
-    {events.map((event) => {
-
-        return <Event key={event._id} {...event} />
-    })}
-
-
-</div>
-
-</Wrapper>
-)
 
 }
 

@@ -26,37 +26,38 @@ import {
   EDIT_EVENT_SUCCESS,
   EDIT_EVENT_ERROR,
   SHOW_STATS_BEGIN,
-  SHOW_STATS_SUCCESS
+  SHOW_STATS_SUCCESS,
+  CLEAR_FILTERS,
+  CHANGE_PAGE,
+  GET_CURRENT_USER_BEGIN,
+  GET_CURRENT_USER_SUCCESS
 } from './action'
+import { useEffect } from 'react'
 // add useContext for on eless import -m not necesaary but good for bigger projects
-
-const token = localStorage.getItem('token')
-const user = localStorage.getItem('user')
-const county = localStorage.getItem('county')
 
 
 //set up jobs globally to enableboth adding, editing & grabing values
 const initialState = {
   isLoading: false,
+  userLoading: true,
   showAlert: false,
   alertText: '',
   alertType: '',
-  user: user ? JSON.parse(user) : null,
-  token: token,
-  county: county || '',
+  user: null,
+  county: 'undefined' || '',
   showSidebar: false,
   isEditing: false,
   editEventId: '',
   location: '',
-  setLocation:  county || '',
+  setLocation: '',
   eventTitle: '',
   capacity: 0,
-  eventTypeOptions: ['Lecture/Talk', 'Family Theate Show', 'Outdoor Tour / Activity', 'Film', 'Drop-in Exhibition', 'Panel Discussion', 'Workshop Event', 'Digital Event', 'Other'],
+  eventTypeOptions: ['Lecture/Talk', 'Family Theatre Show', 'Outdoor Tour / Activity', 'Film', 'Drop-in Exhibition', 'Panel Discussion', 'Workshop Event', 'Digital Event', 'Other'],
   eventType: 'Lecture/Talk',
   targetAudienceOptions: ['0-3', '3-6', '6-10', '10-14', '14-18', '18+', 'All Ages'],
   targetAudience: 'All Ages',
   description: '',
-  date: '',
+  date: [''],
   startTime: '',
   endTime: '',
   admissionPrice: '',
@@ -70,6 +71,13 @@ const initialState = {
   page: 1,
   stats:{},
   weeklySubmissions:[],
+  search:'',
+  searchStatus:'all',
+  searchType:'all',
+  sort:'newest',
+  sortOptions:['newest', 'oldest'],
+  isAdmin: false,
+
 }
 const AppContext = React.createContext()
 
@@ -81,16 +89,6 @@ const AppProvider = ({ children }) => {
     baseURL: '/api/v1',
   });
 
-  //request
-  authFetch.interceptors.request.use(
-    (config) => {
-      config.headers['Authorization'] = `Bearer ${state.token}`;
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
   //response
   authFetch.interceptors.response.use(
     (response) => {
@@ -117,33 +115,20 @@ const AppProvider = ({ children }) => {
   };
 
 
-  const addUserToLocalStorage = ({ user, token, county }) => {
-    localStorage.setItem('user', JSON.stringify(user))
-    localStorage.setItem('token', token)
-    localStorage.setItem('county', county)
-  };
-
-  const removeUserFromLocalStorage = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    localStorage.removeItem('county')
-  }
-
   const setupUser = async ({ currentUser, endPoint, alertText }) => {
     dispatch({ type: SETUP_USER_BEGIN })
     try {
       const { data } = await axios.post(
         `/api/v1/auth/${endPoint}`,
         currentUser);
-      console.log(data)
-      const { user, token, county } = data;
+      // console.log(data)
+      const { user, county, isAdmin } = data;
       dispatch({
         type: SETUP_USER_SUCCESS,
-        payload: { user, token, county, alertText }
+        payload: { user, county, isAdmin, alertText }
       })
-      addUserToLocalStorage({ user, token, county })
+      
     } catch (error) {
-      console.log(error.response)
       dispatch({
         type: SETUP_USER_ERROR,
         payload: { msg: error.response.data.msg },
@@ -156,19 +141,20 @@ const AppProvider = ({ children }) => {
     dispatch({ type: TOGGLE_SIDEBAR })
   }
 
-  const logoutUser = () => {
-    dispatch({ type: LOGOUT_USER })
-    removeUserFromLocalStorage();
+  const logoutUser = async () => {
+    await authFetch.get('/auth/logout')
+    dispatch({ type: LOGOUT_USER });
+    
   }
 
   const updateUser = async (currentUser) => {
     dispatch({ type: UPDATE_USER_BEGIN })
     try {
       const { data } = await authFetch.patch('/auth/updateUser', currentUser);
-      const { user, county, token } = data
+      const { user, county} = data
 
-      dispatch({ type: UPDATE_USER_SUCCESS, payload: { user, county, token } })
-      addUserToLocalStorage({ user, county, token })
+      dispatch({ type: UPDATE_USER_SUCCESS, payload: { user, county} })
+      
     } catch (error) {
       if (error.response.status !== 401) {
         dispatch({
@@ -237,8 +223,11 @@ const AppProvider = ({ children }) => {
   }
 
   const getEvents = async () => {
-    let url = `/events`
-
+    const {page, search, searchStatus, searchType, sort} = state
+    let url = `/events?page=${page}&status=${searchStatus}&eventType=${searchType}&sort=${sort}`
+    if(search){
+      url = url + `&search=${search}`
+    }
     dispatch({ type: GET_EVENT_BEGIN })
     try {
       const { data } = await authFetch(url);
@@ -252,8 +241,8 @@ const AppProvider = ({ children }) => {
         }
       })
     } catch (error) {
-      console.log(error.response);
-      // logoutUser()
+      
+      logoutUser()
     }
     clearAlert();
   }
@@ -311,7 +300,7 @@ const AppProvider = ({ children }) => {
       await authFetch.delete(`/events/${eventId}`)
       getEvents()
     } catch (error) {
-      console.log(error.response)
+      logoutUser()
     }
   }
 
@@ -325,14 +314,39 @@ const AppProvider = ({ children }) => {
       }}
       )
     } catch (error) {
-      console.log(error.response)
-       logoutUser()
+      logoutUser()
     }
     clearAlert()
   }
 
+  const clearFilters = () => {
+    dispatch({ type: CLEAR_FILTERS });
+  };
+
+  const changePage = (page) => {
+    dispatch ({type: CHANGE_PAGE, payload: {page}})
+  }
+
+const getCurrentUser = async () => {
+  dispatch({type: GET_CURRENT_USER_BEGIN})
+  try {
+    const {data} = await authFetch('/auth/getCurrentUser')
+    const {user, county, isAdmin} = data
+    dispatch({
+      type:GET_CURRENT_USER_SUCCESS,
+      payload:{user, county, isAdmin}
+    })
+  } catch (error) {
+    if(error.response.status === 401) return;
+    logoutUser();
+  }
+}
+useEffect(()=> {
+  getCurrentUser();
+}, []);
+
   // children prop is everything rendered in between the opening and closing tag of the component 
-  return (<AppContext.Provider value={{ ...state, displayAlert, setupUser, toggleSidebar, logoutUser, updateUser, handleChange, clearValues, createEvent, getEvents, setEditEvent, deleteEvent, editEvent, showStats }}>{children}</AppContext.Provider>)
+  return (<AppContext.Provider value={{ ...state, displayAlert, setupUser, toggleSidebar, logoutUser, updateUser, handleChange, clearValues, createEvent, getEvents, setEditEvent, deleteEvent, editEvent, showStats, clearFilters, changePage }}>{children}</AppContext.Provider>)
 
 }
 

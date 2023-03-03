@@ -33,9 +33,10 @@ const Event = ({_id, eventTitle, date, eventType, location, createdAt, status}) 
             <Link to='/add-event' className='btn edit-btn' onClick={()=> setEditEvent(_id)}>
                 Edit
             </Link>
-            <button type='button' className='btn delete-btn' onClick={()=> deleteEvent(_id)}>
+            <button type='button' className='btn delete-btn' onClick={() => {if(window.confirm('Are you sure to delete this record?')){ deleteEvent(_id)};}}>
                 Delete
             </button>
+          
         </div>
     </footer>
     </Wrapper>

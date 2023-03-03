@@ -1,11 +1,17 @@
 import { Logo } from "../components"
 import Wrapper from '../assets/wrappers/WelcomePage'
 import main from '../assets/images/main.svg'
-import {Link} from 'react-router-dom'
+import {Link, Navigate} from 'react-router-dom'
+import { useAppContext } from "../context/appContext"
+import React from "react"
+
 
 
 const Welcome = () => {
+    const {user} = useAppContext()
     return(
+        <React.Fragment>
+            {user && <Navigate to ='/'/>}
         <Wrapper>
             <nav>
                 <Logo />
@@ -25,6 +31,7 @@ const Welcome = () => {
                 <img src={main} alt='adventure' className='img main-img'/>
             </div>
         </Wrapper>
+        </React.Fragment>
     )
 }
 

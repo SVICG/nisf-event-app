@@ -22,7 +22,11 @@ import {
     EDIT_EVENT_SUCCESS,
     EDIT_EVENT_ERROR,
     SHOW_STATS_BEGIN,
-    SHOW_STATS_SUCCESS
+    SHOW_STATS_SUCCESS,
+    CLEAR_FILTERS,
+    CHANGE_PAGE,
+    GET_CURRENT_USER_BEGIN,
+    GET_CURRENT_USER_SUCCESS
 } from "./action"
 
 //import initial state so you can update specific values with out having to keep adding properties everytime initialstate is updated in appContext
@@ -98,7 +102,7 @@ const reducer = (state, action) => {
     //         showAlert:true, 
     //         alertType: 'danger', 
     //         alertText: action.payload.msg,
-    //     };
+    //     };getEvent
     //}
 
     if (action.type === SETUP_USER_BEGIN) {
@@ -109,10 +113,10 @@ const reducer = (state, action) => {
         return {
             ...state,
             isLoading: false,
-            token: action.payload.token,
             user: action.payload.user,
             userCounty: action.payload.userCounty,
             eventCounty: action.payload.eventCounty,
+            isAdmin: action.payload.isAdmin,
             showAlert: true,
             alertType: 'success',
             alertText: action.payload.alertText,
@@ -139,10 +143,7 @@ const reducer = (state, action) => {
     if (action.type === LOGOUT_USER) {
         return {
             ...initialState,
-            user: null,
-            token: null,
-            userCounty: '',
-            eventCounty: '',
+            userLoading:false,
         }
     }
 
@@ -154,7 +155,6 @@ const reducer = (state, action) => {
         return {
             ...state,
             isLoading: false,
-            token: action.payload.token,
             user: action.payload.user,
             userCounty: action.payload.userCounty,
             eventCounty: action.payload.eventCounty,
@@ -177,6 +177,7 @@ const reducer = (state, action) => {
     if (action.type === HANDLE_CHANGE) {
         return {
             ...state,
+            page: 1,
             [action.payload.name]: action.payload.value
         };
     }
@@ -192,8 +193,8 @@ const reducer = (state, action) => {
             capacity: 0,
             description: '',
             admissionPrice: '',
-            startTime:'',
-            endTime:''
+            startTime: '',
+            endTime: ''
         }
         return {
             ...state,
@@ -202,7 +203,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === CREATE_EVENT_BEGIN) {
-        return{...state, isLoading:true}
+        return { ...state, isLoading: true }
     }
 
     if (action.type === CREATE_EVENT_SUCCESS) {
@@ -214,7 +215,7 @@ const reducer = (state, action) => {
             alertText: 'New event created',
         };
     }
-    
+
     if (action.type === CREATE_EVENT_ERROR) {
         return {
             ...state,
@@ -226,7 +227,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === GET_EVENT_BEGIN) {
-        return{...state, isLoading:true, showAlert:false}
+        return { ...state, isLoading: true, showAlert: false }
     }
 
     if (action.type === GET_EVENT_SUCCESS) {
@@ -236,13 +237,13 @@ const reducer = (state, action) => {
             events: action.payload.events,
             totalEvents: action.payload.totalEvents,
             numOfPages: action.payload.numOfPages,
-        
+
         };
     }
 
-    if(action.type === SET_EDIT_EVENT) {
+    if (action.type === SET_EDIT_EVENT) {
         // grab event from event array we have in the state - if the event matches the one being passed in (payload) then return the details
-        const event = state.events.find((event)=> event._id === action.payload.id)
+        const event = state.events.find((event) => event._id === action.payload.id)
         const {
             _id,
             eventTitle,
@@ -258,28 +259,28 @@ const reducer = (state, action) => {
             theme,
             status } = event
         // then update the state
-            return {
-                ...state,
-                isEditing:true,
-                editEventId:_id,
-                eventTitle,
-                location,
-                capacity,
-                eventType,
-                targetAudience,
-                description,
-                date,
-                startTime,
-                endTime,
-                admissionPrice,
-                theme,
-                status
+        return {
+            ...state,
+            isEditing: true,
+            editEventId: _id,
+            eventTitle,
+            location,
+            capacity,
+            eventType,
+            targetAudience,
+            description,
+            date,
+            startTime,
+            endTime,
+            admissionPrice,
+            theme,
+            status
 
-            }
+        }
     }
 
-    if(action.type === DELETE_EVENT_BEGIN) {
-        return {...state, isLoading:true}
+    if (action.type === DELETE_EVENT_BEGIN) {
+        return { ...state, isLoading: true }
     }
 
     if (action.type === EDIT_EVENT_BEGIN) {
@@ -296,7 +297,7 @@ const reducer = (state, action) => {
             showAlert: true,
             alertType: 'success',
             alertText: 'Event had been updated'
-          
+
         };
     }
 
@@ -307,14 +308,14 @@ const reducer = (state, action) => {
             showAlert: true,
             alertType: 'danger',
             alertText: action.payload.msg
-          
+
         };
     }
 
     if (action.type === SHOW_STATS_BEGIN) {
         return {
             ...state,
-            isLoading:true,
+            isLoading: true,
             showAlert: false,
         }
     }
@@ -322,11 +323,45 @@ const reducer = (state, action) => {
     if (action.type === SHOW_STATS_SUCCESS) {
         return {
             ...state,
-            isLoading:false,
+            isLoading: false,
             showAlert: true,
-            stats:action.payload.stats,
+            stats: action.payload.stats,
             weeklySubmissions: action.payload.weeklySubmissions,
         }
+    }
+
+    if (action.type === CLEAR_FILTERS) {
+        return {
+          ...state,
+          search: '',
+          searchStatus: 'all',
+          searchType: 'all',
+          sort: 'newest',
+        };
+      }
+
+    if (action.type === CHANGE_PAGE) {
+        return {
+            ...state, 
+            page:action.payload.page}
+    }
+
+    if (action.type === GET_CURRENT_USER_BEGIN) {
+       return { ...state,
+        userLoading:true,
+        showAlert:false,
+       }
+    }
+
+    if (action.type === GET_CURRENT_USER_SUCCESS) {
+        return { 
+            ...state,
+            userLoading:false,
+            user:action.payload.user,
+            userCounty:action.payload.user.userCounty,
+            location:action.payload.location,
+            
+           }
     }
 
     throw new Error(`no such action : ${action.type}`)

@@ -90,7 +90,7 @@ return <Wrapper className='full-page'>
 {/* password input */}
 <FormRow 
     type='password' 
-    name='password' 
+    name='password'
     value={values.password} 
     handleChange={handleChange}
 />
