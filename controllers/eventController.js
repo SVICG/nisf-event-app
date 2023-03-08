@@ -35,7 +35,10 @@ const getAllEvents = async (req, res) => {
     }
     
     if(admin){
-        const queryObject = all
+        const queryObject = {
+     
+            createdBy: req.user
+        }
   
     }
 

@@ -22,7 +22,6 @@ const Stats = () => {
     <h1>Events</h1>
     <StatsContainer />
     
-
     {/* only show if not at 0 litsings */}
     {weeklySubmissions.length > 0 && <ChartsContainer />}
     

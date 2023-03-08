@@ -22,7 +22,8 @@ html {
 /* colours */
 --main-color: #339989;
 --bkcolor: #E4F5F2;
---dark-color:#e4f5f218;
+--dark-color:#05251f;
+--dark-hover:#021a152c;
 --font-color: #0d3517;
 --font-active: #13812e;
 --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);

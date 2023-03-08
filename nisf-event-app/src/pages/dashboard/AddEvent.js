@@ -6,13 +6,7 @@ import TextFormRow from '../../components/TextFormRow'
 import PlacesAutocomplete from 'react-places-autocomplete'
 import DatePicker from "react-multi-date-picker"
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
-import { format, isSameDay, setDate } from 'date-fns';
-// import { DayPicker } from 'react-day-picker';
-// import 'react-day-picker/dist/style.css';
 
-// function Component() {
-//   return <DayPicker />;
-// }
 
 
 const AddEvent = () => {
@@ -30,7 +24,7 @@ const AddEvent = () => {
     targetAudience,
     targetAudienceOptions,
     description,
-    date,
+    // date,
     startTime,
     endTime,
     admissionPrice,
@@ -45,16 +39,19 @@ const AddEvent = () => {
   } = useAppContext()
 
 
+
   const [address, setLocation] = React.useState("");
-  const [values, setValue] = React.useState([])
+  const [value, setValue] = React.useState([])
+
 
   const handleDates = (value) => {
     const name = 'date'
-    
-    setValue(value)
-    // handleChange({ name, values })
-    console.log(values)
+    setValue([...value, value]);
+    console.log(value)
+    handleChange({ name, value })
   }
+
+
 
   const searchOptions = {
     componentRestrictions: { country: ['uk'] }
@@ -185,12 +182,19 @@ const AddEvent = () => {
 
 
           {/* date updated*/}
+          <div className="date-row">
+          <label htmlFor="date" className='form-label'>Date</label>  
+          <div className="help-tip">
+            <p>Please select all dates that your event will take place</p>
+          </div>
+          </div>
           <DatePicker
             multiple
             plugins={[
               <DatePanel />
-             ]}
-            value={values}
+            ]}
+            value={value}
+            label="Date"
             name="date"
             onChange={handleDates}
             minDate="2023/02/16"
@@ -205,6 +209,7 @@ const AddEvent = () => {
             value={date}
             handleChange={handleEventInput}
           /> */}
+
           {/* Start Time */}
           <FormRow
             type="time"

@@ -54,14 +54,14 @@ display: none;
     }
 
     .nav-link:hover {
-    color:darkgray;
+    color:var(--dark-color);
     padding-left: 3rem;
-    background: var(--dark-color);
+    background: var(--dark-hover);
 }
 
     .nav-link:hover .icon{
-        background: var(--dark-color);
-        color:darkgray;
+        background: none;
+        color:var(--dark-color);
     }
 
     .icon {

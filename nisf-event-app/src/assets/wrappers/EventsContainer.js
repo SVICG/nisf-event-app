@@ -1,25 +1,35 @@
 import styled from 'styled-components';
 
 
-const Wrapper = styled.section `
+const Wrapper = styled.section`
 
 margin-top: 4rem;
 
 .events {
-    display:grid;
+    /* display:grid; 
     grid-template-columns: 1fr;
-    row-gap: 2rem;
+    row-gap: 2rem; */
+    justify-content:center;
+    align-items:center;
+    max-width: 800px;
+ 
 }
 
 
 @media (min-width: 992px) {
     .events {
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    row-gap: 1rem;
+
+   
+    display: block;
+    justify-content:center;
+    align-items:center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+   
 }
 }
 
 
 `
- export default Wrapper;
+export default Wrapper;

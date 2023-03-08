@@ -15,10 +15,9 @@ align-items: center;
     text-transform: capitalize;
 }
 
-
-
-
-
+.date-text {
+    padding: 0.1rem;
+}
 
 `
 

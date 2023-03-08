@@ -57,7 +57,7 @@ const initialState = {
   targetAudienceOptions: ['0-3', '3-6', '6-10', '10-14', '14-18', '18+', 'All Ages'],
   targetAudience: 'All Ages',
   description: '',
-  date: [''],
+  date: [],
   startTime: '',
   endTime: '',
   admissionPrice: '',
@@ -308,15 +308,17 @@ const AppProvider = ({ children }) => {
     dispatch({type:SHOW_STATS_BEGIN})
     try {
       const {data} = await authFetch('/events/stats')
-      dispatch({type:SHOW_STATS_SUCCESS, payload: {
+      dispatch({
+        type:SHOW_STATS_SUCCESS, 
+        payload: {
         stats: data.defaultStats,
         weeklySubmissions: data.weeklySubmissions,
-      }}
-      )
+      },
+      });
     } catch (error) {
-      logoutUser()
+      logoutUser();
     }
-    clearAlert()
+    clearAlert();
   }
 
   const clearFilters = () => {
