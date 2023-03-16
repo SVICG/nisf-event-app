@@ -26,7 +26,9 @@ import {
     CLEAR_FILTERS,
     CHANGE_PAGE,
     GET_CURRENT_USER_BEGIN,
-    GET_CURRENT_USER_SUCCESS
+    GET_CURRENT_USER_SUCCESS,
+    GET_USERS_BEGIN,
+    GET_USERS_SUCCESS
 } from "./action"
 
 //import initial state so you can update specific values with out having to keep adding properties everytime initialstate is updated in appContext
@@ -327,6 +329,7 @@ const reducer = (state, action) => {
             showAlert: true,
             stats: action.payload.stats,
             weeklySubmissions: action.payload.weeklySubmissions,
+            eventTheme : action.payload.eventTheme
         }
     }
 
@@ -362,6 +365,16 @@ const reducer = (state, action) => {
             location:action.payload.location,
             
            }
+    }
+
+    if(action.type === GET_USERS_BEGIN) {
+        
+        return { ...state, isLoading: true, showAlert: false }
+    }
+
+    if(action.type === GET_USERS_SUCCESS) {
+        
+        return { ...state, isLoading: false, users: action.payload.users }
     }
 
     throw new Error(`no such action : ${action.type}`)

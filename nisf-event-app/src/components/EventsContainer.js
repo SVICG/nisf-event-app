@@ -23,26 +23,19 @@ const EventsContainer = () => {
 
     if (events.length === 10) {
         return (
-
             <h2>No events</h2>
-
         )
     }
 
     return (
 
         <Wrapper>
-
-
             <div className="events">
                 {events.map((event) => {
-
                     return <Event key={event._id} {...event} />
                 })}
-
             </div>
             {numOfPages > 1 && <PageBtnContainer />}
-
         </Wrapper>
     )
 

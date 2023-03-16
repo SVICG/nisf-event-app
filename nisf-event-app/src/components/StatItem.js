@@ -1,8 +1,10 @@
-import React from 'react'
+
 import Wrapper from '../assets/wrappers/StatItem'
 
 
 const StatItem = ({count, title, icon, color, bcg}) => {
+
+
   return (
     //pass prop to styled component instead of dynamic class
     <Wrapper color={color} bcg={bcg}>
@@ -12,6 +14,8 @@ const StatItem = ({count, title, icon, color, bcg}) => {
         
       </header>
     <h5 className='title'>{title}</h5>
+ 
+   
     </Wrapper>
   )
 }

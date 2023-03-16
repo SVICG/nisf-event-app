@@ -24,7 +24,7 @@ const AddEvent = () => {
     targetAudience,
     targetAudienceOptions,
     description,
-    // date,
+    date,
     startTime,
     endTime,
     admissionPrice,
@@ -193,7 +193,7 @@ const AddEvent = () => {
             plugins={[
               <DatePanel />
             ]}
-            value={value}
+            value={date}
             label="Date"
             name="date"
             onChange={handleDates}
@@ -201,14 +201,6 @@ const AddEvent = () => {
             maxDate="2023/02/26"
 
           />
-
-          {/* date
-          <FormRow
-            type="date"
-            name="date"
-            value={date}
-            handleChange={handleEventInput}
-          /> */}
 
           {/* Start Time */}
           <FormRow

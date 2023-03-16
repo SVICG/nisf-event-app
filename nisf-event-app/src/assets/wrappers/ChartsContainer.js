@@ -19,5 +19,8 @@ button {
     
 }
 
+h4{
+    padding-top: 3rem;
+}
 `
  export default Wrapper;

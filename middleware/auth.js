@@ -15,7 +15,7 @@ const auth = async (req, res, next) => {
         const payload = jwt.verify(token, process.env.JWT_SECRET)
 
         //userId to be used for other controllers such as updateUsers to access it 
-        req.user = { userId: payload.userId};
+        req.user = { userId: payload.userId, isAdmin: payload.isAdmin};
         next();
     } catch (error) {
         console.log(error);

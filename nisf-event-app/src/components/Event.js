@@ -11,12 +11,10 @@ import { Link } from 'react-router-dom'
 const Event = ({_id, eventTitle, date, eventType, location, createdAt, status, theme}) => {
    
    const {setEditEvent, deleteEvent} = useAppContext()
-//    date.map(x=>console.log(x))
-   
     let dispDate = moment(date.map(x=>(x)))
     
     dispDate = dispDate.format('Do MMM, YY')
-    console.log(dispDate)
+
   return (
     <Wrapper>
     <header>
@@ -46,17 +44,7 @@ const Event = ({_id, eventTitle, date, eventType, location, createdAt, status, t
           
         </div>
     </div>
-    {/* <footer>
-        <div className="actions">
-            <Link to='/add-event' className='btn edit-btn' onClick={()=> setEditEvent(_id)}>
-                Edit
-            </Link>
-            <button type='button' className='btn delete-btn' onClick={() => {if(window.confirm('Are you sure to delete this record?')){ deleteEvent(_id)};}}>
-                Delete
-            </button>
-          
-        </div>
-    </footer> */}
+
     </Wrapper>
   )
 }

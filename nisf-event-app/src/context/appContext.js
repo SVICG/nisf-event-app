@@ -30,7 +30,9 @@ import {
   CLEAR_FILTERS,
   CHANGE_PAGE,
   GET_CURRENT_USER_BEGIN,
-  GET_CURRENT_USER_SUCCESS
+  GET_CURRENT_USER_SUCCESS,
+  GET_USERS_BEGIN,
+  GET_USERS_SUCCESS
 } from './action'
 import { useEffect } from 'react'
 // add useContext for on eless import -m not necesaary but good for bigger projects
@@ -71,11 +73,13 @@ const initialState = {
   page: 1,
   stats:{},
   weeklySubmissions:[],
+  eventTheme:[],
   search:'',
   searchStatus:'all',
   searchType:'all',
   sort:'newest',
   sortOptions:['newest', 'oldest'],
+  users:[],
   isAdmin: false,
 
 }
@@ -97,7 +101,7 @@ const AppProvider = ({ children }) => {
     (error) => {
       console.log(error.response);
       if (error.response.status === 401) {
-        console.log('AUTH ERROR');
+        logoutUser();
       }
       return Promise.reject(error);
     }
@@ -145,6 +149,10 @@ const AppProvider = ({ children }) => {
     await authFetch.get('/auth/logout')
     dispatch({ type: LOGOUT_USER });
     
+  }
+
+  const setEditUser = (id) => {
+    console.log(`set edit user: ${id} `);
   }
 
   const updateUser = async (currentUser) => {
@@ -313,6 +321,7 @@ const AppProvider = ({ children }) => {
         payload: {
         stats: data.defaultStats,
         weeklySubmissions: data.weeklySubmissions,
+        eventTheme: data.eventTheme,
       },
       });
     } catch (error) {
@@ -347,8 +356,31 @@ useEffect(()=> {
   getCurrentUser();
 }, []);
 
+const getUsers = async ()=> {
+  let url= `/auth/getAllUsers`
+
+  dispatch ({type:GET_USERS_BEGIN})
+  try {
+    const {data} = await authFetch(url);
+    const {users} = data
+
+    dispatch ({
+      type: GET_USERS_SUCCESS,
+      payload: {users}
+    })
+
+  } catch (error) {
+    console.log(error.response)
+  }
+}
+
+
+
+useEffect(()=> {
+  getUsers();
+}, []);
   // children prop is everything rendered in between the opening and closing tag of the component 
-  return (<AppContext.Provider value={{ ...state, displayAlert, setupUser, toggleSidebar, logoutUser, updateUser, handleChange, clearValues, createEvent, getEvents, setEditEvent, deleteEvent, editEvent, showStats, clearFilters, changePage }}>{children}</AppContext.Provider>)
+  return (<AppContext.Provider value={{ ...state, displayAlert, setupUser, toggleSidebar, logoutUser, updateUser, handleChange, clearValues, createEvent, getEvents, setEditEvent, deleteEvent, editEvent, showStats, clearFilters, changePage, getUsers}}>{children}</AppContext.Provider>)
 
 }
 

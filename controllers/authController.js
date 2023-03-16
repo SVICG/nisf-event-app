@@ -7,7 +7,7 @@ import attachCookie from "../utils/attachCookie.js"
 //next passes error on to middleware
 const register = async (req, res) => {
     //try {
-    const { name, email, password } = req.body;
+    const { name, lastName, email, password } = req.body;
 
     if (!name || !email || !password) {
         throw new BadRequestError('Please provide all the required details')
@@ -18,7 +18,7 @@ const register = async (req, res) => {
         throw new BadRequestError('Email already in use')
     }
 
-    const user = await User.create({ name, email, password })
+    const user = await User.create({ name, lastName, email, password })
     const token = user.createJWT()
     attachCookie({ res, token });
 
@@ -101,27 +101,11 @@ const logout = async (req, res) => {
     res.status(StatusCodes.OK).json({msg:'logged out'})
 }
 
-// const secure = async (req, res, next) => {
-      
-//     let token;
-//        if(req.cookies) token = req.cookies.token
-//        if(!token) {
-//            return res.status(StatusCodes.UNAUTHORIZED).json({msg:'Unauthorised'});
-//        }
-       
-//     const user = await User.findOne({ _id: req.user.userId });
-//     //    req.user = user;
-//        next()
-       
-//    }
+const getAllUsers = async (req, res) => {
+    const users = await User.find()
 
-// const clearanceLevel = (...clearanceLevel) => {
-//     return (req, res, next)=> {
-//         clearanceLevel.includes(req.user.clearance)
-//         ? next()
-//         : res.status(StatusCodes.UNAUTHORIZED).json({msg:'Unauthorised'});
-//     } 
-// }
+    res.status(StatusCodes.OK).json({users})
+}
 
 
-export { register, login, updateUser, getCurrentUser, logout}
+export { register, login, updateUser, getCurrentUser, getAllUsers, logout}
