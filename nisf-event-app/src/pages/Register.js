@@ -17,8 +17,12 @@ const initialState = {
 
 }
 
+
+
 const Register = () => {
     const [values, setValues] = useState(initialState)
+ 
+ 
     const navigate = useNavigate()
     const { user, isLoading, showAlert, displayAlert, setupUser } = useAppContext()
 
@@ -103,12 +107,20 @@ const Register = () => {
                 handleChange={handleChange}
             />
             {/* password input */}
-            <FormRow
+            {/* <FormRow
                 type='password'
                 name='password'
                 value={values.password}
                 handleChange={handleChange}
-            />
+            /> */}
+
+            <FormRow
+                type='password'
+                name='password'
+                // pattern= {PASSWORD_VALID_REGEX.source}
+                value={values.password}
+                handleChange={handleChange}
+            />  
             <button type='submit' className='btn btn-block' disabled={isLoading}>Submit</button>
             <p>
                 {values.isMember ? 'Not a member?' : 'Already a member?'}

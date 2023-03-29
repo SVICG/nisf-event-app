@@ -70,6 +70,14 @@ footer{
     }
   }
 
+  .admin {
+    font-size: 1.5rem;
+    display: float;
+    float: left;
+    width: 30%;
+    margin: 0.5rem;
+  }
+
 
 .actions {
   display: inline-block;
@@ -85,7 +93,6 @@ footer{
     height: 40px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
  
-  
 }
 
 .edit-btn {
@@ -100,6 +107,11 @@ footer{
     color: darkred;
     background-color: pink;
     
+}
+
+.toggle{
+  margin: 0.5rem;
+  padding-top: 0.20rem;
 }
 
 `

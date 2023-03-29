@@ -26,7 +26,7 @@ const Welcome = () => {
                     </p>
                     <Link to="/register" className='btn btn-hero'>Login or Register</Link>
                     <p></p>
-                    <Link to="/register" className='btn btn-hero'>Submit an Event</Link>
+                    {/* <Link to="/register" className='btn btn-hero'>Submit an Event</Link> */}
                 </div>
                 <img src={main} alt='adventure' className='img main-img'/>
             </div>

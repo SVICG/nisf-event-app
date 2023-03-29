@@ -27,7 +27,7 @@ const getAllEvents = async (req, res) => {
 
     const { status, eventType, date, theme, targetAudience, sort, search } = req.query
     //return all jobs that meet the 'status - query'
-   let adminObj
+ 
     const queryObject = {
         createdBy: req.user.userId
     };
@@ -35,9 +35,7 @@ const getAllEvents = async (req, res) => {
     const admin = await User.findById(req.user.userId).select('isAdmin')
 
     if (status && status !== 'all') {
-        if(admin.isAdmin===true) {
-            adminObj.status(status)
-        }
+     
         queryObject.status = status
     }
     if (eventType && eventType !== 'all') {
@@ -50,16 +48,12 @@ const getAllEvents = async (req, res) => {
         queryObject.targetAudience = targetAudience
     }
     if (search) {
-        queryObject.eventTitle = { $regex: search, $options: 'i' }
+        queryObject.eventTitle = { $regex: search, $options: 'i' } 
+        //   queryObject.theme = { $regex: search, $options: 'i' }
     }
 
-   
-    let results 
-    if (admin.isAdmin === true) {
-        results = Event.find(adminObj)
-    } else {
-        results = Event.find(queryObject)
-    }
+
+   let results = Event.find(queryObject)
 
     if (sort === 'newest') {
         results = results.sort('-createdAt')
@@ -157,7 +151,10 @@ const showStats = async (req, res) => {
         { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
         { $group: { _id: '$theme', count: { $sum: 1 } } },
     ])
-
+    let eventTypes = await Event.aggregate([
+        { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+        { $group: { _id: '$eventType', count: { $sum: 1 } } },
+    ])
 
 
     let weeklySubmissions = await Event.aggregate([
@@ -180,7 +177,7 @@ const showStats = async (req, res) => {
     })
         .reverse()
 
-    res.status(StatusCodes.OK).json({ defaultStats, weeklySubmissions, eventTheme })
+    res.status(StatusCodes.OK).json({ defaultStats, weeklySubmissions, eventTheme, eventTypes })
 }
 
 

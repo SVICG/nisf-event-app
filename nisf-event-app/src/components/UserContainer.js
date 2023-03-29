@@ -2,8 +2,8 @@ import { useEffect } from "react"
 import Wrapper from "../assets/wrappers/EventsContainer"
 import { useAppContext } from "../context/appContext"
 import Loading from "./Loading"
-import PageBtnContainer from "./PageBtnContainer"
 import User from "./User"
+
 
 
 const UserContainer = () => {
@@ -37,8 +37,9 @@ const UserContainer = () => {
                     return <User key={user._id}{...user}/>
                 })}
             </div>
+
         </Wrapper>
     )
 }
-
+// onClick={() => {if(window.confirm('Are you sure to delete this record?')){ deleteEvent(_id)};}}
 export default UserContainer

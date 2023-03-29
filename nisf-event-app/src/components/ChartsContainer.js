@@ -11,6 +11,7 @@ const ChartsContainer = () => {
 
   const {weeklySubmissions:data} = useAppContext()
   const {eventTheme:data01} = useAppContext()
+  const{eventTypes:data02} = useAppContext()
  
   return (
 <Wrapper>
@@ -24,6 +25,10 @@ const ChartsContainer = () => {
   <div>
   <h4>Events by Theme</h4>
  { <PieCharts data = {data01}/>}
+  </div>
+  <div>
+  <h4>Events by Type</h4>
+ { <PieCharts data = {data02}/>}
   </div>
          
 </Wrapper>

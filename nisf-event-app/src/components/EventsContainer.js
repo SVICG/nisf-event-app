@@ -7,7 +7,7 @@ import PageBtnContainer from "./PageBtnContainer"
 
 
 const EventsContainer = () => {
-    const { getEvents, events, isLoading, page, totalEvents, search, searchStatus, searchType, sort, numOfPages } = useAppContext()
+    const { getEvents, events, isLoading, page, search, searchStatus, searchType, sort, numOfPages } = useAppContext()
 
     useEffect(() => {
 

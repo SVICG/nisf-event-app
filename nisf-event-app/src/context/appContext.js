@@ -10,9 +10,15 @@ import {
   SETUP_USER_SUCCESS,
   TOGGLE_SIDEBAR,
   LOGOUT_USER,
-  UPDATE_USER_BEGIN,
-  UPDATE_USER_SUCCESS,
-  UPDATE_USER_ERROR,
+  SET_UPDATE_USER,
+  UPDATE_PROFILE_BEGIN,
+  UPDATE_PROFILE_SUCCESS,
+  UPDATE_PROFILE_ERROR,
+  EDIT_USER_BEGIN,
+  EDIT_USER_SUCCESS,
+  EDIT_USER_ERROR,
+  TOGGLE_ADMIN,
+  DELETE_USER_BEGIN,
   HANDLE_CHANGE,
   CLEAR_VALUES,
   CREATE_EVENT_BEGIN,
@@ -43,8 +49,10 @@ const initialState = {
   isLoading: false,
   userLoading: true,
   showAlert: false,
+  toggleAdmin:false,
   alertText: '',
   alertType: '',
+  isOn:'',
   user: null,
   county: 'undefined' || '',
   showSidebar: false,
@@ -71,15 +79,22 @@ const initialState = {
   totalEvents: 0,
   numOfPages: 1,
   page: 1,
-  stats:{},
-  weeklySubmissions:[],
-  eventTheme:[],
-  search:'',
-  searchStatus:'all',
-  searchType:'all',
-  sort:'newest',
-  sortOptions:['newest', 'oldest'],
-  users:[],
+  stats: {},
+  weeklySubmissions: [],
+  eventTheme: [],
+  eventTypes: [],
+  search: '',
+  searchStatus: 'all',
+  searchType: 'all',
+  sort: 'newest',
+  sortOptions: ['newest', 'oldest'],
+  users: [],
+  organisation: '',
+  address: '',
+  city: '',
+  postalCode: '',
+  country: '',
+  county:'',
   isAdmin: false,
 
 }
@@ -131,7 +146,7 @@ const AppProvider = ({ children }) => {
         type: SETUP_USER_SUCCESS,
         payload: { user, county, isAdmin, alertText }
       })
-      
+
     } catch (error) {
       dispatch({
         type: SETUP_USER_ERROR,
@@ -148,25 +163,26 @@ const AppProvider = ({ children }) => {
   const logoutUser = async () => {
     await authFetch.get('/auth/logout')
     dispatch({ type: LOGOUT_USER });
-    
+
   }
 
-  const setEditUser = (id) => {
-    console.log(`set edit user: ${id} `);
+  const setUpdateUser = (id) => {
+    dispatch({ type: SET_UPDATE_USER, payload: { id } })
   }
+
 
   const updateUser = async (currentUser) => {
-    dispatch({ type: UPDATE_USER_BEGIN })
+    dispatch({ type: UPDATE_PROFILE_BEGIN })
     try {
       const { data } = await authFetch.patch('/auth/updateUser', currentUser);
-      const { user, county} = data
+      const { user } = data
 
-      dispatch({ type: UPDATE_USER_SUCCESS, payload: { user, county} })
-      
+      dispatch({ type: UPDATE_PROFILE_SUCCESS, payload: { user } })
+
     } catch (error) {
       if (error.response.status !== 401) {
         dispatch({
-          type: UPDATE_USER_ERROR,
+          type: UPDATE_PROFILE_ERROR,
           payload: { msg: error.response.data.msg },
         });
       }
@@ -176,6 +192,68 @@ const AppProvider = ({ children }) => {
 
   }
 
+  const editUser = async () => {
+
+    dispatch({ type: EDIT_USER_BEGIN })
+
+    try {
+      const {
+        name,
+        email,
+        lastName,
+        organisation,
+        address,
+        city,
+        postalCode,
+        country,
+        county
+
+      } = state
+
+      await authFetch.patch(`/auth/editUser/${state.editUserId}`, {
+        name,
+        email,
+        lastName,
+        organisation,
+        orgAddress: {
+          address: address,
+          city: city,
+          postalCode: postalCode,
+          country: country,
+          county: county
+        },
+      })
+      dispatch({ type: EDIT_USER_SUCCESS })
+      dispatch({ type: CLEAR_VALUES })
+    } catch (error) {
+      console.log(error)
+      dispatch({ type: EDIT_USER_ERROR, payload: { msg: error.response.data.msg } })
+    }
+    clearAlert();
+  }
+
+const toggleAdmin = async (id, isOn) => {
+  dispatch({type: TOGGLE_ADMIN})
+  try{
+
+    await authFetch.patch(`/auth/${id}`, {
+      isAdmin: !isOn
+  
+    })
+    }catch (error) {
+     console.log(error)
+    }
+}
+
+const deleteUser = async (userId) => {
+  dispatch({ type: DELETE_USER_BEGIN })
+  try {
+    await authFetch.delete(`/auth/${userId}`)
+    getUsers()
+  } catch (error) {
+    logoutUser()
+  }
+}
 
   const handleChange = ({ name, value }) => {
     dispatch({ type: HANDLE_CHANGE, payload: { name, value } })
@@ -185,6 +263,7 @@ const AppProvider = ({ children }) => {
     dispatch({
       type: CLEAR_VALUES
     })
+    
   }
 
   const createEvent = async () => {
@@ -231,9 +310,9 @@ const AppProvider = ({ children }) => {
   }
 
   const getEvents = async () => {
-    const {page, search, searchStatus, searchType, sort} = state
+    const { page, search, searchStatus, searchType, sort } = state
     let url = `/events?page=${page}&status=${searchStatus}&eventType=${searchType}&sort=${sort}`
-    if(search){
+    if (search) {
       url = url + `&search=${search}`
     }
     dispatch({ type: GET_EVENT_BEGIN })
@@ -249,7 +328,7 @@ const AppProvider = ({ children }) => {
         }
       })
     } catch (error) {
-      
+
       logoutUser()
     }
     clearAlert();
@@ -313,16 +392,17 @@ const AppProvider = ({ children }) => {
   }
 
   const showStats = async () => {
-    dispatch({type:SHOW_STATS_BEGIN})
+    dispatch({ type: SHOW_STATS_BEGIN })
     try {
-      const {data} = await authFetch('/events/stats')
+      const { data } = await authFetch('/events/stats')
       dispatch({
-        type:SHOW_STATS_SUCCESS, 
+        type: SHOW_STATS_SUCCESS,
         payload: {
-        stats: data.defaultStats,
-        weeklySubmissions: data.weeklySubmissions,
-        eventTheme: data.eventTheme,
-      },
+          stats: data.defaultStats,
+          weeklySubmissions: data.weeklySubmissions,
+          eventTheme: data.eventTheme,
+          eventTypes: data.eventTypes
+        },
       });
     } catch (error) {
       logoutUser();
@@ -335,52 +415,74 @@ const AppProvider = ({ children }) => {
   };
 
   const changePage = (page) => {
-    dispatch ({type: CHANGE_PAGE, payload: {page}})
+    dispatch({ type: CHANGE_PAGE, payload: { page } })
   }
 
-const getCurrentUser = async () => {
-  dispatch({type: GET_CURRENT_USER_BEGIN})
-  try {
-    const {data} = await authFetch('/auth/getCurrentUser')
-    const {user, county, isAdmin} = data
-    dispatch({
-      type:GET_CURRENT_USER_SUCCESS,
-      payload:{user, county, isAdmin}
-    })
-  } catch (error) {
-    if(error.response.status === 401) return;
-    logoutUser();
+  const getCurrentUser = async () => {
+    dispatch({ type: GET_CURRENT_USER_BEGIN })
+    try {
+      const { data } = await authFetch('/auth/getCurrentUser')
+      const { user, county, isAdmin } = data
+      dispatch({
+        type: GET_CURRENT_USER_SUCCESS,
+        payload: { user, county, isAdmin }
+      })
+    } catch (error) {
+      if (error.response.status === 401) return;
+      logoutUser();
+    }
   }
-}
-useEffect(()=> {
-  getCurrentUser();
-}, []);
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
 
-const getUsers = async ()=> {
-  let url= `/auth/getAllUsers`
+  const getUsers = async () => {
+    let url = `/auth/getAllUsers`
 
-  dispatch ({type:GET_USERS_BEGIN})
-  try {
-    const {data} = await authFetch(url);
-    const {users} = data
+    dispatch({ type: GET_USERS_BEGIN })
+    try {
+      const { data } = await authFetch(url);
+      const { users } = data
 
-    dispatch ({
-      type: GET_USERS_SUCCESS,
-      payload: {users}
-    })
+      dispatch({
+        type: GET_USERS_SUCCESS,
+        payload: { users }
+      })
 
-  } catch (error) {
-    console.log(error.response)
+    } catch (error) {
+      console.log(error.response)
+    }
   }
-}
 
 
 
-useEffect(()=> {
-  getUsers();
-}, []);
+  useEffect(() => {
+    getUsers();
+  }, []);
   // children prop is everything rendered in between the opening and closing tag of the component 
-  return (<AppContext.Provider value={{ ...state, displayAlert, setupUser, toggleSidebar, logoutUser, updateUser, handleChange, clearValues, createEvent, getEvents, setEditEvent, deleteEvent, editEvent, showStats, clearFilters, changePage, getUsers}}>{children}</AppContext.Provider>)
+  return (<AppContext.Provider value={{
+    ...state,
+    displayAlert,
+    setupUser, 
+    editUser, 
+    toggleSidebar, 
+    logoutUser, 
+    updateUser, 
+    setUpdateUser,
+    toggleAdmin,
+    deleteUser,
+    handleChange, 
+    clearValues, 
+    createEvent, 
+    getEvents, 
+    setEditEvent, 
+    deleteEvent, 
+    editEvent, 
+    showStats, 
+    clearFilters, 
+    changePage, 
+    getUsers
+  }}>{children}</AppContext.Provider>)
 
 }
 

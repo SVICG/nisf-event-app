@@ -6,9 +6,15 @@ import {
     SETUP_USER_SUCCESS,
     TOGGLE_SIDEBAR,
     LOGOUT_USER,
-    UPDATE_USER_BEGIN,
-    UPDATE_USER_SUCCESS,
-    UPDATE_USER_ERROR,
+    SET_UPDATE_USER,
+    EDIT_USER_BEGIN,
+    EDIT_USER_SUCCESS,
+    EDIT_USER_ERROR,
+    UPDATE_PROFILE_BEGIN,
+    UPDATE_PROFILE_SUCCESS,
+    UPDATE_PROFILE_ERROR,
+    TOGGLE_ADMIN,
+    DELETE_USER_BEGIN,
     HANDLE_CHANGE,
     CLEAR_VALUES,
     CREATE_EVENT_BEGIN,
@@ -53,59 +59,6 @@ const reducer = (state, action) => {
         };
     }
 
-    // if(action.type === REGISTER_USER_BEGIN) {
-    //     return {...state, isLoading: true};
-    // }
-
-    // if(action.type === REGISTER_USER_SUCCESS) {
-    //     return {...state, 
-    //         isLoading: false,
-    //         token:action.payload.token,
-    //         user: action.payload.user,
-    //         userCounty: action.payload.userCounty,
-    //         eventCounty: action.payload.eventCounty,
-    //         showAlert:true, 
-    //         alertType: 'success', 
-    //         alertText: 'Great! Your account has been created...'
-    //     };
-    // }
-
-    // if(action.type === REGISTER_USER_ERROR) {
-    //     return {
-    //         ...state, 
-    //         isLoading: false,
-    //         showAlert:true, 
-    //         alertType: 'danger', 
-    //         alertText: action.payload.msg,
-    //     };
-    // }
-
-    // if(action.type === LOGIN_USER_BEGIN) {
-    //     return {...state, isLoading: true};
-    // }
-
-    // if(action.type === LOGIN_USER_SUCCESS) {
-    //     return {...state, 
-    //         isLoading: false,
-    //         token: action.payload.token,
-    //         user: action.payload.user,
-    //         userCounty: action.payload.userCounty,
-    //         eventCounty: action.payload.eventCounty,
-    //         showAlert:true, 
-    //         alertType: 'success', 
-    //         alertText: 'Great! Logging in...'
-    //     };
-    // }
-
-    // if(action.type === LOGIN_USER_ERROR) {
-    //     return {
-    //         ...state, 
-    //         isLoading: false,
-    //         showAlert:true, 
-    //         alertType: 'danger', 
-    //         alertText: action.payload.msg,
-    //     };getEvent
-    //}
 
     if (action.type === SETUP_USER_BEGIN) {
         return { ...state, isLoading: true };
@@ -145,28 +98,96 @@ const reducer = (state, action) => {
     if (action.type === LOGOUT_USER) {
         return {
             ...initialState,
-            userLoading:false,
+            userLoading: false,
         }
     }
 
-    if (action.type === UPDATE_USER_BEGIN) {
+    if (action.type === SET_UPDATE_USER) {
+        // grab USER from event array we have in the state - if the event matches the one being passed in (payload) then return the details
+        const user = state.users.find((user) => user._id === action.payload.id)
+        const {
+            _id,
+            name,
+            lastName,
+            email,
+            organisation,
+            orgAddress: {
+                address,
+                city,
+                postalCode,
+                country,
+                county
+              },
+
+
+        } = user
+        console.log(_id);
+        // then update the state
+        return {
+            ...state,
+            isEditing: true,
+            editUserId: _id,
+            name,
+            lastName,
+            email,
+            organisation,
+            address: address,
+            city,
+            postalCode,
+            country,
+            county
+        }
+
+    }
+
+    if (action.type === EDIT_USER_BEGIN) {
+        return { ...state, isLoading: true };
+    }
+    if (action.type === EDIT_USER_SUCCESS) {
+        return {
+            ...state,
+            isLoading: false,
+            showAlert: true,
+            alertType: 'success',
+            alertText: 'User has been updated'
+
+        };
+    }
+
+    if (action.type === EDIT_USER_ERROR) {
+        return {
+            ...state,
+            isLoading: false,
+            showAlert: true,
+            alertType: 'danger',
+            alertText: action.payload.msg
+
+        };
+    }
+    if (action.type === UPDATE_PROFILE_BEGIN) {
         return { ...state, isLoading: true };
     }
 
-    if (action.type === UPDATE_USER_SUCCESS) {
+    if (action.type === UPDATE_PROFILE_SUCCESS) {
         return {
             ...state,
             isLoading: false,
             user: action.payload.user,
-            userCounty: action.payload.userCounty,
-            eventCounty: action.payload.eventCounty,
+            // userCounty: action.payload.userCounty,
+            // eventCounty: action.payload.eventCounty,
+            organisation: action.payload.user.organisation,
+            city: action.payload.user.orgAddress.city,
+            address: action.payload.user.orgAddress.address,
+            postalCode: action.payload.user.orgAddress.postalCode,
+            county: action.payload.user.orgAddress.county,
+            country: action.payload.user.orgAddress.country,
             showAlert: true,
             alertType: 'success',
             alertText: 'Profile Updated'
         };
     }
 
-    if (action.type === UPDATE_USER_ERROR) {
+    if (action.type === UPDATE_PROFILE_ERROR) {
         return {
             ...state,
             isLoading: false,
@@ -175,6 +196,22 @@ const reducer = (state, action) => {
             alertText: action.payload.msg,
         };
     }
+
+    if (action.type === TOGGLE_ADMIN) {
+
+        return {
+            ...state,
+            isOnAdmin: !state.isOnAdmin,
+            toggleAdmin: !state.toggleAdmin,
+        };
+    }
+
+   if(action.type === DELETE_USER_BEGIN) {
+    return { ...state, isLoading: true }
+    
+   }
+
+
 
     if (action.type === HANDLE_CHANGE) {
         return {
@@ -298,7 +335,7 @@ const reducer = (state, action) => {
             isLoading: false,
             showAlert: true,
             alertType: 'success',
-            alertText: 'Event had been updated'
+            alertText: 'Event has been updated'
 
         };
     }
@@ -329,51 +366,54 @@ const reducer = (state, action) => {
             showAlert: true,
             stats: action.payload.stats,
             weeklySubmissions: action.payload.weeklySubmissions,
-            eventTheme : action.payload.eventTheme
+            eventTheme: action.payload.eventTheme,
+            eventTypes: action.payload.eventTypes
         }
     }
 
     if (action.type === CLEAR_FILTERS) {
         return {
-          ...state,
-          search: '',
-          searchStatus: 'all',
-          searchType: 'all',
-          sort: 'newest',
+            ...state,
+            search: '',
+            searchStatus: 'all',
+            searchType: 'all',
+            sort: 'newest',
         };
-      }
+    }
 
     if (action.type === CHANGE_PAGE) {
         return {
-            ...state, 
-            page:action.payload.page}
+            ...state,
+            page: action.payload.page
+        }
     }
 
     if (action.type === GET_CURRENT_USER_BEGIN) {
-       return { ...state,
-        userLoading:true,
-        showAlert:false,
-       }
+        return {
+            ...state,
+            userLoading: true,
+            showAlert: false,
+        }
     }
 
     if (action.type === GET_CURRENT_USER_SUCCESS) {
-        return { 
+        return {
             ...state,
-            userLoading:false,
-            user:action.payload.user,
-            userCounty:action.payload.user.userCounty,
-            location:action.payload.location,
-            
-           }
+            userLoading: false,
+            user: action.payload.user,
+            userCounty: action.payload.user.userCounty,
+
+
+        }
     }
 
-    if(action.type === GET_USERS_BEGIN) {
-        
+    if (action.type === GET_USERS_BEGIN) {
+
         return { ...state, isLoading: true, showAlert: false }
     }
 
-    if(action.type === GET_USERS_SUCCESS) {
-        
+    if (action.type === GET_USERS_SUCCESS) {
+
         return { ...state, isLoading: false, users: action.payload.users }
     }
 

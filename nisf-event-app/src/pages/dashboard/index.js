@@ -4,6 +4,7 @@ import Profile from "./Profile";
 import SharedLayout from "./SharedLayout";
 import Stats from "./Stats";
 import Users from "./Users";
+import UpdateUsers from "./UpdateUser";
 import ProtectedRoute from "./ProtectedRoute";
 import AdminRoute from "./AdminRoute";
 export{
@@ -13,6 +14,7 @@ export{
     Profile,
     Stats,
     Users,
+    UpdateUsers,
     ProtectedRoute,
     AdminRoute
 }

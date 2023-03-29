@@ -19,7 +19,7 @@ const Navbar = () => {
 
         <div>
           <Logo />
-          <h3 className="logo-text">Dashboard</h3>
+          <h3 className="logo-text">{user.name}'s Dashboard</h3>
         </div>
         <div className="btn-container">
           {/* invoke setshow logout */}

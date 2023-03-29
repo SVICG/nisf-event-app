@@ -1,4 +1,5 @@
 import User from "../models/User.js"
+import React, { useState } from 'react'
 import { StatusCodes } from 'http-status-codes'
 import { BadRequestError, UnauthenticatedError } from '../errors/index.js'
 import attachCookie from "../utils/attachCookie.js"
@@ -29,7 +30,7 @@ const register = async (req, res) => {
             county: user.county,
             name: user.name
         },
-        county: user.county
+        // county: user.county
     })
     // } catch (error) {
     //     next(error)
@@ -66,17 +67,24 @@ const login = async (req, res) => {
 
 const updateUser = async (req, res) => {
 
-    const { email, name, lastName, county } = req.body
+    const { email, name, lastName, organisation, address, city, postalCode, country, county } = req.body
     if (!email || !name || !lastName || !county) {
-        throw new BadRequestError('Please provide all values')
+        throw new BadRequestError('Please provide all required values')
     }
 
     const user = await User.findOne({ _id: req.user.userId });
-
+   
+    // const user = editUserId
     user.email = email
     user.name = name
     user.lastName = lastName
-    user.county = county
+    user.organisation = organisation
+    user.orgAddress.address = address
+    user.orgAddress.city = city
+    user.orgAddress.postalCode = postalCode
+    user.orgAddress.county = county
+    user.orgAddress.country = country
+    // user.county = county
 
     await user.save()
 
@@ -86,9 +94,58 @@ const updateUser = async (req, res) => {
 
 }
 
+const editUser = async (req, res) => {
+
+    const { email, name, lastName, organisation, address, city, postalCode, country, county } = req.body
+    
+    const {id: editUserId} = req.params
+    // throw new BadRequestError(`this is ${editUserId}`);
+    if (!email || !name || !lastName ) {
+        throw new BadRequestError('Please provide all required values')
+    }
+ 
+    // const user = await User.findOne({ editUserId });
+    
+    const updatedUser = await User.findOneAndUpdate({ _id: editUserId }, req.body, {
+        
+        new: true,
+        runValidators: true,
+    })
+    
+    res.status(StatusCodes.OK).json({ updatedUser })
+
+}
+
+const makeAdmin = async (req, res) =>{
+    
+    const {id: editUserId} = req.params
+       
+    const user = await User.findOne({ _id: editUserId});
+   
+    const updatedAdmin = await User.findOneAndUpdate({ _id: editUserId }, req.body, {
+        new: true,
+        runValidators: true,
+    })
+
+    res.status(StatusCodes.OK).json({msg:'User Updated'})
+}
+
+const deleteUser = async (req,res) => {
+    const {id: editUserId} = req.params
+    const user = await User.findOne({ _id: editUserId});
+    if (!user) {
+        throw new NotFoundError(`Cannot find event ${eventId}`)
+    }
+
+    await user.remove()
+
+    res.status(StatusCodes.OK).json({ msg: 'User has been deleted' })
+}
+
+
 const getCurrentUser = async (req, res) => {
     const user = await User.findOne({ _id: req.user.userId });
-    res.status(StatusCodes.OK).json({ user, userCounty: user.county });
+    res.status(StatusCodes.OK).json({ user});
 }
 
 
@@ -108,4 +165,4 @@ const getAllUsers = async (req, res) => {
 }
 
 
-export { register, login, updateUser, getCurrentUser, getAllUsers, logout}
+export { register, login, updateUser, editUser, getCurrentUser, getAllUsers, makeAdmin, deleteUser, logout}

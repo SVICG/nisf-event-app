@@ -6,50 +6,65 @@ import jwt from 'jsonwebtoken';
 
 
 const UserSchema = new mongoose.Schema({
-    name: { 
+    name: {
         type: String,
         required: [true, 'Please provide a name'],
         minlength: 2,
         maxlength: 20,
-        trim:true,
+        trim: true,
     },
 
-    email: { 
+    email: {
         type: String,
         required: [true, 'Please provide an email address'],
-        validate:{
-            validator:validator.isEmail,
-            message:'Please provide a valid email'
+        validate: {
+            validator: validator.isEmail,
+            message: 'Please provide a valid email'
         },
-        unique: true,
+        
     },
 
-    password: { 
+    password: {
         type: String,
         required: [true, 'Please provide a password'],
         minlength: 6,
         select: false
     },
 
-    lastName: { 
+    lastName: {
         type: String,
         minlength: 2,
         maxlength: 20,
-        trim:true,
+        trim: true,
         default: 'Last name'
     },
 
-    //add address & organisation
-    county: { 
+    organisation: {
         type: String,
-        maxlength: 20,
-        trim:true,
-        default: 'County'
+        default:'organisation name',
+        maxlength: 100,
+        trim: true,
     },
+
+    orgAddress: {
+        address: { type: String, default: 'address' },
+        city: { type: String, default: 'city' },
+        county: { type: String, default: 'county' },
+        postalCode: { type: String, default: 'postal code'},
+        country: { type: String, default: 'country' },
+    },
+
+    //add address
+    // county: {
+    //     type: String,
+    //     maxlength: 20,
+    //     trim: true,
+    //     default: 'County'
+    // },
 
     isAdmin: {
         type: Boolean,
-        required:true,
+        
         default: false
 
     }
@@ -57,20 +72,20 @@ const UserSchema = new mongoose.Schema({
 })
 
 //hash user password
-UserSchema.pre('save', async function(){
-//console.log(this.modifiedPaths())
-if(!this.isModified('password')) return
+UserSchema.pre('save', async function () {
+    //console.log(this.modifiedPaths())
+    if (!this.isModified('password')) return
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt)
 })
 
-UserSchema.methods.createJWT = function() {
-    return jwt.sign({userId: this._id, admin:this.isAdmin}, process.env.JWT_SECRET, {
+UserSchema.methods.createJWT = function () {
+    return jwt.sign({ userId: this._id, admin: this.isAdmin }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_LIFETIME,
-      })
+    })
 }
 //compare password instance method
-UserSchema.methods.comparePassword = async function(candidatePassword) {
+UserSchema.methods.comparePassword = async function (candidatePassword) {
     const isMatch = await bcrypt.compare(candidatePassword, this.password);
     return isMatch
 }

@@ -11,6 +11,7 @@ import EventsContainer from "./EventsContainer"
 import StatsContainer from "./StatsContainer"
 import ChartsContainer from "./ChartsContainer"
 import UserContainer from "./UserContainer"
+import ToggleSwitch from "./ToggleSwitch"
 
 
-export {Logo, FormRow, Alert, Loading, Navbar, BigSidebar, SmallSidebar, FormRowSelect, EventsContainer, SearchContainer, StatsContainer, ChartsContainer, UserContainer}
+export {Logo, ToggleSwitch, FormRow, Alert, Loading, Navbar, BigSidebar, SmallSidebar, FormRowSelect, EventsContainer, SearchContainer, StatsContainer, ChartsContainer, UserContainer}

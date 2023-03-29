@@ -28,7 +28,7 @@ const Event = ({_id, eventTitle, date, eventType, location, createdAt, status, t
     <div className="content">
         <div className="content-center">
             <EventInfo icon={<AiOutlineEnvironment/>} text={location}/>
-            <DateInfo icon={<AiOutlineCalendar/>} text={date}/>
+            <DateInfo key ={_id} icon={<AiOutlineCalendar/>} text={date}/>
             <EventInfo icon={<AiOutlineTag/>} text={theme}/>
             
         </div>
