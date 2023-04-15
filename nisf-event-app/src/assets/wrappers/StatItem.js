@@ -16,6 +16,7 @@ header {
 }
 
 .count{
+   
     display: block;
     font-size: 40px;
     color: ${(props) => props.color};

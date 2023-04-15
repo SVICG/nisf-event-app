@@ -34,7 +34,7 @@ html {
 };
 
 *{
-  font-family: var(--bodyFont);
+  font-family: var(--bodyFont) !important;
 }
 
 body{
@@ -53,6 +53,12 @@ p {
 }
 
 a {
+  font-family: var(--bodyFont);
+  text-decoration: none;
+  letter-spacing: 1px;
+
+}
+span {
   font-family: var(--bodyFont);
   text-decoration: none;
   letter-spacing: 1px;
