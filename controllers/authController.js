@@ -5,6 +5,7 @@ import { BadRequestError, UnauthenticatedError } from '../errors/index.js'
 import attachCookie from "../utils/attachCookie.js"
 
 
+
 //next passes error on to middleware
 const register = async (req, res) => {
     //try {
@@ -21,16 +22,16 @@ const register = async (req, res) => {
 
     const user = await User.create({ name, lastName, email, password })
     const token = user.createJWT()
+    
     attachCookie({ res, token });
 
     res.status(StatusCodes.CREATED).json({
         user: {
             email: user.email,
             lastName: user.lastName,
-            county: user.county,
             name: user.name
         },
-        // county: user.county
+        
     })
     // } catch (error) {
     //     next(error)
@@ -60,10 +61,12 @@ const login = async (req, res) => {
     //prevent sending sensitive data
     user.password = undefined;
     attachCookie({ res, token });
-    res.status(StatusCodes.OK).json({ user, userCounty: user.county });
+    res.status(StatusCodes.OK).json({ user });
 
     // res.send ('login')
 }
+
+
 
 const updateUser = async (req, res) => {
 

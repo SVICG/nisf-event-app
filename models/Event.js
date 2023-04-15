@@ -11,10 +11,12 @@ const EventSchema = new mongoose.Schema({
         default:'Add title'
     },
 
-    location: { 
-        type: String,
-        required: [true, 'Please provide an event location'],
-        unique: false,
+    eventLocation: { 
+        eventAddress1: { type: String, default: 'address line 1' },
+        eventAddress2: { type: String, default: '' },
+        eventCity: { type: String, default: '' },
+        eventCounty: { type: String, enum: ['Antrim', 'Down', 'Armagh', 'Derry/Londonderry', 'Tyrone', 'Fermanagh'], default:'Antrim' },
+        eventPostalCode: { type: String, default: 'postal code'},
     },
 
     capacity: { 
@@ -37,9 +39,9 @@ const EventSchema = new mongoose.Schema({
     description: { 
         type: String,
         minlength: 2,
-        maxlength: 1000,
+        maxlength: 2000,
         trim:true,
-        default: 'Last name'
+        default: ''
     },
 
     date:[ { 

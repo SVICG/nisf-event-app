@@ -10,7 +10,7 @@ const start = async () => {
 try {
     await connectDB(process.env.MONGO_URL)
     await Event.deleteMany()
-    const jsonProducts = JSON.parse(await readFile(new URL('./event-data.json', import.meta.url)))
+    const jsonProducts = JSON.parse(await readFile(new URL('./events.json', import.meta.url)))
     await Event.create(jsonProducts)
     console.log('Success')
     process.exit(0)

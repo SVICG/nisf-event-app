@@ -25,17 +25,6 @@ const UpdateUsers = () => {
   } = useAppContext()
 
 
-
-  // const [name, setName] = useState(users?.name)
-  // const [email, setEmail] = useState(users?.email)
-  // const [lastName, setLastName] = useState(users?.lastName)
-  // const [organisation, setOrganisation] = useState(users?.organisation)
-  // const [county, setCounty] = useState(users?.orgAddress.county)
-  // const [address, setAddress] = useState(users?.orgAddress.address)
-  // const [city, setCity] = useState(users?.orgAddress.city)
-  // const [postalCode, setpostalCode] = useState(users?.orgAddress.postalCode)
-  // const [country, setCountry] = useState(users?.orgAddress.country)
-
   const handleEventInput = (e) => {
     const name = e.target.name
     const value = e.target.value

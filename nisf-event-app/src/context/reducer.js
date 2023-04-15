@@ -23,10 +23,14 @@ import {
     GET_EVENT_BEGIN,
     GET_EVENT_SUCCESS,
     SET_EDIT_EVENT,
+    SET_SEARCH_STATUS,
     DELETE_EVENT_BEGIN,
     EDIT_EVENT_BEGIN,
     EDIT_EVENT_SUCCESS,
     EDIT_EVENT_ERROR,
+    EDIT_STATUS_BEGIN,
+    EDIT_STATUS_SUCCESS,
+    EDIT_STATUS_ERROR,
     SHOW_STATS_BEGIN,
     SHOW_STATS_SUCCESS,
     CLEAR_FILTERS,
@@ -46,7 +50,7 @@ const reducer = (state, action) => {
             ...state,
             showAlert: true,
             alertType: 'danger',
-            alertText: 'Please provide the required info'
+            alertText: 'Please provide the required information'
         };
     }
 
@@ -173,8 +177,6 @@ const reducer = (state, action) => {
             ...state,
             isLoading: false,
             user: action.payload.user,
-            // userCounty: action.payload.userCounty,
-            // eventCounty: action.payload.eventCounty,
             organisation: action.payload.user.organisation,
             city: action.payload.user.orgAddress.city,
             address: action.payload.user.orgAddress.address,
@@ -221,13 +223,18 @@ const reducer = (state, action) => {
         };
     }
 
+    if (action.type === SET_SEARCH_STATUS) {
+        return {
+            ...state,
+           [action.payload.name]: action.payload.value
+        };
+    }
 
     if (action.type === CLEAR_VALUES) {
 
         const initialState = {
             isEditing: false,
             editEventId: '',
-            location: state.userCounty,
             eventTitle: '',
             capacity: 0,
             description: '',
@@ -286,7 +293,13 @@ const reducer = (state, action) => {
         const {
             _id,
             eventTitle,
-            location,
+            eventLocation:{
+                eventAddress1,
+                eventAddress2,
+                eventCity,
+                eventCounty,
+                eventPostalCode,
+              },
             capacity,
             eventType,
             targetAudience,
@@ -303,7 +316,11 @@ const reducer = (state, action) => {
             isEditing: true,
             editEventId: _id,
             eventTitle,
-            location,
+            eventAddress1,
+            eventAddress2: eventAddress2,
+            eventCity,
+            eventCounty,
+            eventPostalCode,
             capacity,
             eventType,
             targetAudience,
@@ -351,6 +368,35 @@ const reducer = (state, action) => {
         };
     }
 
+    if (action.type === EDIT_STATUS_BEGIN) {
+        return {
+            ...state,
+            isLoading: true,
+        };
+    }
+
+    if (action.type === EDIT_STATUS_SUCCESS) {
+        return {
+            ...state,
+            isLoading: false,
+            showAlert: true,
+            alertType: 'success',
+            alertText: 'Status has been updated'
+
+        };
+    }
+
+    if (action.type === EDIT_STATUS_ERROR) {
+        return {
+            ...state,
+            isLoading: false,
+            showAlert: true,
+            alertType: 'danger',
+            alertText: action.payload.msg
+
+        };
+    }
+
     if (action.type === SHOW_STATS_BEGIN) {
         return {
             ...state,
@@ -367,7 +413,8 @@ const reducer = (state, action) => {
             stats: action.payload.stats,
             weeklySubmissions: action.payload.weeklySubmissions,
             eventTheme: action.payload.eventTheme,
-            eventTypes: action.payload.eventTypes
+            eventTypes: action.payload.eventTypes,
+            eventCounty: action.payload.eventCounty
         }
     }
 

@@ -67,6 +67,12 @@ const UserSchema = new mongoose.Schema({
         
         default: false
 
+    },
+
+    role: {
+        type: String,
+        default: 'basic'
+
     }
 
 })

@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
 
-const Wrapper = styled.section `
+const Wrapper = styled.section`
 
 padding: 2rem;
 background-color: white;
 
-border-bottom: 5px solid ${(props)=> props.color};
+border-bottom: 5px solid ${(props) => props.color};
 
 
 header {
@@ -18,20 +18,25 @@ header {
 .count{
     display: block;
     font-size: 40px;
-    color: ${(props)=> props.color};
+    color: ${(props) => props.color};
 }
 
 .title {
+   display: block;
     margin: 0;
-    margin-top: 0.5rem;
+    margin-bottom: 0rem;
+    font-family: var(--headingFont);
+    line-height: 1.3;
     text-transform: capitalize;
+    font-size: 1.2rem;
     letter-spacing: 3;
     font-weight: bolder;
+  
 }
 
 .icon {
     font-size: 40px;
-    color: ${(props)=> props.color};
+    color: ${(props) => props.color};
     display: flex;
     align-items: center;
 }
@@ -47,4 +52,4 @@ header {
 
 
 `
- export default Wrapper;
+export default Wrapper;

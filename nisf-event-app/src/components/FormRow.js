@@ -1,19 +1,28 @@
 
 
 
-const FormRow = ({type, name, value, handleChange, labelText}) => {
+const FormRow = ({ type, name, value, handleChange, labelText, tooltip, helpText }) => {
   return (
     <div className='form-row'>
-    <label htmlFor={name} className='form-label'>{labelText || name}</label>
-    <input 
-        type={type} 
-        value={value} 
-        name={name}
-        onChange={handleChange} 
-        autoComplete='on'
-        className='form-input' />
+      <div className='label-row'>
+        <label htmlFor={labelText} className='form-label'>{labelText || name}</label>
+        {tooltip &&
+          <div className="help-tip">
+            <p>{tooltip}</p>
+          </div>
+        }
+      </div>
 
-</div>
+      <input
+        type={type}
+        value={value}
+        name={name}
+        onChange={handleChange}
+        autoComplete='on'
+        className='form-input' 
+      />
+
+    </div>
   )
 }
 

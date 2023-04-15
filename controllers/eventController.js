@@ -5,6 +5,7 @@ import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors/
 import checkPermissions from '../utils/checkPermissions.js';
 import mongoose from 'mongoose';
 import moment from 'moment';
+import emailStatusUpdate from '../utils/email.js';
 
 
 
@@ -15,7 +16,8 @@ const createEvent = async (req, res) => {
         throw new BadRequestError('Please provide all values')
     }
 
-    req.body.createdBy = req.user.userId
+    // req.body.createdBy = req.user.userId
+
     const event = await Event.create(req.body)
     res.status(StatusCodes.CREATED).json({ event })
 
@@ -24,18 +26,23 @@ const createEvent = async (req, res) => {
 
 
 const getAllEvents = async (req, res) => {
-
+    
     const { status, eventType, date, theme, targetAudience, sort, search } = req.query
     //return all jobs that meet the 'status - query'
- 
-    const queryObject = {
-        createdBy: req.user.userId
-    };
+    const user = await User.findOne({ _id: req.user.userId });
+    const queryObject = {}
 
-    const admin = await User.findById(req.user.userId).select('isAdmin')
+    // check if user is admin, if so, allow them to see all events
+    if (user.isAdmin) {
+
+    } else {
+        // filter events by createdBy field, which should match the userId of the current user
+        queryObject.createdBy = req.user.userId
+    }
+
 
     if (status && status !== 'all') {
-     
+
         queryObject.status = status
     }
     if (eventType && eventType !== 'all') {
@@ -48,12 +55,11 @@ const getAllEvents = async (req, res) => {
         queryObject.targetAudience = targetAudience
     }
     if (search) {
-        queryObject.eventTitle = { $regex: search, $options: 'i' } 
-        //   queryObject.theme = { $regex: search, $options: 'i' }
+        queryObject.eventTitle = { $regex: search, $options: 'i' }
+
     }
 
-
-   let results = Event.find(queryObject)
+    let results = Event.find(queryObject)
 
     if (sort === 'newest') {
         results = results.sort('-createdAt')
@@ -76,7 +82,7 @@ const getAllEvents = async (req, res) => {
     const totalEvents = await Event.countDocuments(queryObject)
     const numOfPages = Math.ceil(totalEvents / limit)
 
-    res.status(StatusCodes.OK).json({ events, totalEvents: events.length, numOfPages, admin })
+    res.status(StatusCodes.OK).json({ events, totalEvents, numOfPages })
 
 }
 
@@ -96,8 +102,6 @@ const updateEvent = async (req, res) => {
         throw new NotFoundError(`Cannot find event ${eventId}`)
     }
 
-    //check permissions - pass in entire user object to check for roles
-    checkPermissions(req.user, event.createdBy)
 
     //will need to use alternative method if needing to fire hooks
     const updatedEvent = await Event.findOneAndUpdate({ _id: eventId }, req.body, {
@@ -106,6 +110,42 @@ const updateEvent = async (req, res) => {
     })
     res.status(StatusCodes.OK).json({ updatedEvent })
 }
+
+const updateStatus = async (req, res) => {
+    // use alias for id
+    const { id: eventId } = req.params
+    const { status } = req.body
+    const event = await Event.findOne({ _id: eventId })
+    const user = await User.findOne({ _id: event.createdBy });
+    
+
+    if (!event) {
+        throw new NotFoundError(`Cannot find event ${eventId}`)
+    }
+
+    //will need to use alternative method if needing to fire hooks
+    const updatedEvent = await Event.findOneAndUpdate({ _id: eventId }, req.body, {
+        new: true,
+        runValidators: true,
+    })
+    if (status==='approved') {
+    try {
+        await emailStatusUpdate({
+          name: user.name,
+          email: user.email,
+          subject: 'Your event has been approved',
+        });
+    
+        res.status(StatusCodes.OK)
+      } catch (err) {
+        console.log(err);
+        return 
+      }
+    }
+
+    res.status(StatusCodes.OK).json({ updatedEvent })
+}
+
 
 const deleteEvent = async (req, res) => {
     const { id: eventId } = req.params
@@ -144,8 +184,12 @@ const showStats = async (req, res) => {
         pending: stats.pending || 0,
         approved: stats.approved || 0,
         declined: stats.declined || 0,
-
     }
+
+    let eventCounty = await Event.aggregate([
+        { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
+        { $group: { _id: '$eventLocation.eventCounty', count: { $sum: 1 } } },
+    ])
 
     let eventTheme = await Event.aggregate([
         { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
@@ -177,9 +221,9 @@ const showStats = async (req, res) => {
     })
         .reverse()
 
-    res.status(StatusCodes.OK).json({ defaultStats, weeklySubmissions, eventTheme, eventTypes })
+    res.status(StatusCodes.OK).json({ defaultStats, weeklySubmissions, eventTheme, eventTypes, eventCounty })
 }
 
 
 
-export { createEvent, deleteEvent, getAllEvents, updateEvent, showStats }
+export { createEvent, deleteEvent, getAllEvents, updateEvent, updateStatus, showStats }

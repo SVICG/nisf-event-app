@@ -3,7 +3,6 @@ import { FormRow, FormRowSelect, Alert } from '../../components'
 import { useAppContext } from '../../context/appContext.js'
 import Wrapper from '../../assets/wrappers/EventFormPage.js'
 import TextFormRow from '../../components/TextFormRow'
-import PlacesAutocomplete from 'react-places-autocomplete'
 import DatePicker from "react-multi-date-picker"
 import DatePanel from "react-multi-date-picker/plugins/date_panel"
 
@@ -17,7 +16,12 @@ const AddEvent = () => {
     showAlert,
     displayAlert,
     eventTitle,
-    location,
+    eventAddress1,
+    eventAddress2,
+    eventCity,
+    eventCounty,
+    eventPostalCode,
+    eventCountyOptions,
     capacity,
     eventType,
     eventTypeOptions,
@@ -35,40 +39,26 @@ const AddEvent = () => {
     handleChange,
     clearValues,
     createEvent,
-    editEvent
+    editEvent,
+    editStatus,
+    user
   } = useAppContext()
 
 
-
-  const [address, setLocation] = React.useState("");
   const [value, setValue] = React.useState([])
 
 
   const handleDates = (value) => {
     const name = 'date'
     setValue([...value, value]);
-    console.log(value)
+
     handleChange({ name, value })
-  }
-
-
-
-  const searchOptions = {
-    componentRestrictions: { country: ['uk'] }
-
   }
 
   const handleEventInput = (e) => {
     const name = e.target.name
     const value = e.target.value
     handleChange({ name, value })
-  }
-
-  const handleSelect = async value => {
-    const name = 'location'
-    handleChange({ name, value })
-    console.log(value)
-
   }
 
 
@@ -85,76 +75,72 @@ const AddEvent = () => {
     createEvent()
   }
 
+  const handleStatus = (e) => {
+    editStatus();
+  }
+
 
   return (
 
 
     <Wrapper>
 
-      <form className='form'>
+      <form noValidate className='form'>
+
         <h3>{isEditing ? 'edit event' : 'add event'}</h3>
         {showAlert && <Alert />}
         <div className='form-center'>
           {/* event title */}
           <FormRow
             type="text"
-            label="Event Title"
+            labelText="Event Title"
             name="eventTitle"
             value={eventTitle}
             handleChange={handleEventInput}
+            required
           />
-          {/* location */}
 
-          <PlacesAutocomplete
-
-            value={address}
-            name="location"
-            onChange={setLocation}
-            onSelect={handleSelect}
-            searchOptions={searchOptions}
-
-          >
-            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-
-              <div>
-                <label htmlFor="location" className='form-label'>Search Location</label>
-
-                <input {...getInputProps({ placeholder: "Enter the event address" })} />
-                <div>
-                  <p>{address.description}</p>
-                  {loading ? <div>...loading</div> : null}
-
-                  {suggestions.map((suggestion) => {
-                    const style = {
-                      backgroundColor: suggestion.active ? "#41b6e6" : "fff"
-                    }
-
-                    // console.log(suggestion);
-
-                    return <div {...getSuggestionItemProps(suggestion, { style })} key={suggestion.placeId}>
-                      {suggestion.description}
-
-                    </div>
-                  })}
-
-
-                </div>
-
-              </div>)}
-          </PlacesAutocomplete>
+          <h5>Event Location</h5>
           <FormRow
-
-            // type="text"
-            name="location"
-            value={location}
+            labelText="Address Line 1"
+            name="eventAddress1"
+            value={eventAddress1}
             handleChange={handleEventInput}
           />
+          <FormRow
+            labelText="Address Line 2"
+            name="eventAddress2"
+            value={eventAddress2}
+            handleChange={handleEventInput}
+          />
+          <FormRow
+            labelText="City"
+            name="eventCity"
+            value={eventCity}
+            handleChange={handleEventInput}
+          />
+          <FormRowSelect
+            labelText="County"
+            name="eventCounty"
+            value={eventCounty}
+            list={eventCountyOptions}
+            handleChange={handleEventInput}
+          />
+          <FormRow
+            labelText="Post Code"
+            name="eventPostalCode"
+            value={eventPostalCode}
+            handleChange={handleEventInput}
+          />
+          <h5>Event Details</h5>
+
           {/* capacity */}
           <FormRow
             type="text"
             name="capacity"
             value={capacity}
             handleChange={handleEventInput}
+            tooltip="This is the total amount tickets that are available to the public for your event.  Please do not include complmentary or guest tickets in this total, but be sure to subtract them from your total capacity"
           />
           {/* eventType */}
           <FormRowSelect
@@ -165,7 +151,8 @@ const AddEvent = () => {
           />
           {/* target audience*/}
           <FormRowSelect
-            name="target Audience"
+            labelText='Target Audience'
+            name="targetAudience"
             value={targetAudience}
             handleChange={handleEventInput}
             list={targetAudienceOptions}
@@ -177,16 +164,16 @@ const AddEvent = () => {
             name="description"
             value={description}
             handleChange={handleEventInput}
+            tooltip="This will be the description that is included in the printed programme and on the website. Try to include what makes your event interesting, unique, and what would make audiences want to attend.  Please do not include any information that is not relevant to the public"
 
           />
 
-
           {/* date updated*/}
           <div className="date-row">
-          <label htmlFor="date" className='form-label'>Date</label>  
-          <div className="help-tip">
-            <p>Please select all dates that your event will take place</p>
-          </div>
+            <label htmlFor="date" className='form-label'>Date</label>
+            <div className="help-tip">
+              <p>Please select all dates that your event will take place</p>
+            </div>
           </div>
           <DatePicker
             multiple
@@ -205,7 +192,7 @@ const AddEvent = () => {
           {/* Start Time */}
           <FormRow
             type="time"
-            label="Start Time"
+            labelText="Start Time"
             name="startTime"
             value={startTime}
             handleChange={handleEventInput}
@@ -214,7 +201,7 @@ const AddEvent = () => {
           {/* endTime */}
           <FormRow
             type="time"
-            label="End Time"
+            labelText="End Time"
             name="endTime"
             value={endTime}
             handleChange={handleEventInput}
@@ -223,6 +210,7 @@ const AddEvent = () => {
           {/* admissionPrice */}
           <FormRow
             type="text"
+            labelText='Admission Price'
             name="admissionPrice"
             value={admissionPrice}
             handleChange={handleEventInput}
@@ -236,13 +224,7 @@ const AddEvent = () => {
             list={themeOptions}
           />
 
-          {/* event status */}
-          <FormRowSelect
-            name="status"
-            value={status}
-            handleChange={handleEventInput}
-            list={statusOptions}
-          />
+
         </div>
 
 
@@ -256,6 +238,24 @@ const AddEvent = () => {
             clearValues()
           }}>
             Clear
+          </button>
+        </div>
+      </form>
+
+      <form className='form'>
+        <h3>Update Event Status</h3>
+        {/* event status */}
+        {user.isAdmin && (
+          <FormRowSelect
+            name="status"
+            value={status}
+            handleChange={handleEventInput}
+            list={statusOptions}
+          />)}
+
+        <div className='btn-container'>
+          <button type='submit' className='btn btn-block submit-btn' onClick={handleStatus} disabled={isLoading}>
+            Submit
           </button>
         </div>
       </form>

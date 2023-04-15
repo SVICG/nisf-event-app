@@ -6,8 +6,11 @@ import Loading from "./Loading"
 import PageBtnContainer from "./PageBtnContainer"
 
 
+
+
 const EventsContainer = () => {
     const { getEvents, events, isLoading, page, search, searchStatus, searchType, sort, numOfPages } = useAppContext()
+   
 
     useEffect(() => {
 
@@ -21,7 +24,7 @@ const EventsContainer = () => {
         )
     }
 
-    if (events.length === 10) {
+    if (events.length === 0) {
         return (
             <h2>No events</h2>
         )

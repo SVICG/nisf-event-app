@@ -8,11 +8,11 @@ import { useAppContext } from '../context/appContext'
 import { Link } from 'react-router-dom'
 
 
-const Event = ({_id, eventTitle, date, eventType, location, createdAt, status, theme}) => {
+const Event = ({_id, eventTitle, date, eventType, eventLocation, createdAt, status, theme}) => {
    
    const {setEditEvent, deleteEvent} = useAppContext()
     let dispDate = moment(date.map(x=>(x)))
-    
+    const address = [eventLocation.eventAddress1, eventLocation.eventAddress2, eventLocation.eventCity, eventLocation.eventCounty].filter(Boolean).join(", ");
     dispDate = dispDate.format('Do MMM, YY')
 
   return (
@@ -27,8 +27,8 @@ const Event = ({_id, eventTitle, date, eventType, location, createdAt, status, t
  
     <div className="content">
         <div className="content-center">
-            <EventInfo icon={<AiOutlineEnvironment/>} text={location}/>
-            <DateInfo key ={_id} icon={<AiOutlineCalendar/>} text={date}/>
+            <EventInfo icon={<AiOutlineEnvironment/>} text={address}/>
+            <DateInfo  id={_id} icon={<AiOutlineCalendar/>} text={date}/>
             <EventInfo icon={<AiOutlineTag/>} text={theme}/>
             
         </div>

@@ -1,20 +1,28 @@
 
 
 
-const TextFormRow = ({type,name,value, handleChange, labelText}) => {
+const TextFormRow = ({ type, name, value, handleChange, labelText, tooltip }) => {
   return (
     <div className='form-row text-area'>
-    <label htmlFor={name} className='form-label'>{labelText || name}</label>
-    <textarea
-    
-        type={type} 
-        value={value} 
-        name={name}
-        onChange={handleChange} 
-        className='form-input' />
-        
+      <div className="label-row">
+        <label htmlFor={name} className='form-label'>{labelText || name}</label>
+        {tooltip &&
+          <div className="help-tip">
+            <p>{tooltip}</p>
+          </div>
+        }
+      </div>
+      <textarea
 
-</div>
+        type={type}
+        value={value}
+        name={name}
+        onChange={handleChange}
+        className='form-input'
+      />
+
+
+    </div>
   )
 }
 

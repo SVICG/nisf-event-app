@@ -15,6 +15,12 @@ p{
     text-align: center;
 }
 
+.displayErrors input:invalid {
+  border-color: red;
+  border-style: solid;
+  border-width: 5px;
+}
+
 
 
 `

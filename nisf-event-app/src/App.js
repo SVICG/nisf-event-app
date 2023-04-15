@@ -15,8 +15,8 @@ function App() {
             <SharedLayout />
           </ProtectedRoute>
         }>
-          <Route index element={<Stats />} />
-          <Route path="all-events" element={<AllEvents />} />
+          <Route index element={<AllEvents />} />
+          <Route path="stats" element={<Stats />} />
           <Route path="add-event" element={<AddEvent />} />
           <Route path="profile" element={<Profile />} />
 

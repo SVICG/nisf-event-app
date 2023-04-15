@@ -2,8 +2,20 @@ import express from 'express'
 const app = express()
 import dotenv from 'dotenv'
 dotenv.config()
+
 //reduces need for try/catch blocks
 import 'express-async-errors'
+
+//handlebars
+// import expbs from 'express-handlebars'
+// import path from 'path'
+
+// app.engine('handlebars', expbs({
+//     defaultLayout:'index',
+//     layoutsDir: path.join(__dirname, 'views/layouts')
+// }))
+
+// app.set('view engine', 'handlebars')
 
 import morgan from 'morgan'
 
@@ -22,7 +34,7 @@ import errorHandlerMiddleware from './middleware/error-handler.js'
 
 import cookieParser from 'cookie-parser'
 
-//display method route and responsein console
+//display method route and response in console
 if(process.env.NODE_ENV !== 'prodution' ){
     app.use(morgan('dev'))
 }

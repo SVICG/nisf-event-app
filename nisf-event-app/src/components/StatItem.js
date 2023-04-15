@@ -1,8 +1,18 @@
 
 import Wrapper from '../assets/wrappers/StatItem'
+import { NavLink } from 'react-router-dom'
+import { useAppContext } from '../context/appContext'
 
 
-const StatItem = ({count, title, icon, color, bcg}) => {
+const StatItem = ({ count, title, icon, color, bcg }) => {
+
+  const { updateSearch } = useAppContext();
+  const statusType = title
+
+  const updateStatus = (status) => {
+    updateSearch({ name: 'searchStatus', value: status })
+   
+  }
 
 
   return (
@@ -11,11 +21,12 @@ const StatItem = ({count, title, icon, color, bcg}) => {
       <header>
         <span className='count'> {count} </span>
         <span className='icon'> {icon} </span>
-        
+
       </header>
-    <h5 className='title'>{title}</h5>
- 
-   
+
+      <NavLink to={`/`} end className='title' onClick={() => updateStatus(statusType)}>{title}</NavLink>
+
+
     </Wrapper>
   )
 }

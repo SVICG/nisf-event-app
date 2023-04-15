@@ -13,9 +13,10 @@ const auth = async (req, res, next) => {
    
     try{
         const payload = jwt.verify(token, process.env.JWT_SECRET)
-
+        const admin = payload.admin
         //userId to be used for other controllers such as updateUsers to access it 
-        req.user = { userId: payload.userId, isAdmin: payload.isAdmin};
+        req.user = { userId: payload.userId, admin};
+    
         next();
     } catch (error) {
         console.log(error);

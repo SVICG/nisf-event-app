@@ -8,13 +8,17 @@ width: 100%;
 overflow: hidden;
 
 .form {
-    
-    max-width: 70%;
+
     width: 100%;
     margin-top: 2rem;    
 }
 
-.date-row {
+.date-row{
+    display: flex;
+    /* width: 50%; */
+}
+
+.label-row{
     display: flex;
     /* width: 50%; */
 }
@@ -32,26 +36,33 @@ overflow: hidden;
 
 }
 
+
+
 .help-tip{
     /* position: absolute; */
     top: 18px;
     right: 18px;
-    margin-left:1rem;
+    margin: 0.25rem 0 0 0.5rem;
     display: block;
     text-align: center;
-    background-color: var(--dark-color);
+    background-color: white;
     border-radius: 50%;
-    width: 22px;
-    height: 22px;
-    font-size: 11px;
-    line-height: 22px;
+    border-width: 0.12rem;
+    border-color: black;
+    border-style: solid;
+    width: 20px;
+    height: 20px;
+    font-size: 15px;
+    line-height: 18px;
     cursor: default;
 }
 
 .help-tip:before{
     content:'?';
     font-weight: bold;
-    color:#fff;
+    color:black;
+    text-align: center;
+  
 }
 
 .help-tip:hover p{
@@ -68,7 +79,8 @@ overflow: hidden;
     z-index: 99;
     text-align: left;
     background-color: #1E2021;
-    padding: 20px;
+    margin-top: 3px;
+    padding: 10px;
     width: 300px;
     position: relative;
     border-radius: 3px;
@@ -80,12 +92,10 @@ overflow: hidden;
 }
 
 .help-tip p:before{ /* The pointer of the tooltip */
-    /* position: relative; */
+   
     content: '';
     width:0;
     height: 0;
-    border:6px solid transparent;
-    border-bottom-color:#1E2021;
     right:10px;
     top:-12px;
 }
@@ -102,7 +112,7 @@ overflow: hidden;
 
 @media (min-width: 992px){
     .form-center{
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         align-items: center;
         column-gap: 1rem;
     }
@@ -110,6 +120,7 @@ overflow: hidden;
     .btn-container {
         margin-top: 0;
     }
+    
 }
 
 @media (min-width: 1120px) {
@@ -117,8 +128,12 @@ overflow: hidden;
         grid-template-columns: 1fr;
     }
     .btn-container {
-        margin-top: 0;
+        margin: 0 1 0 1;
     }
+    .form {
+        max-width: 70%;
+    }
+
 }
 
 @-webkit-keyframes fadeIn {

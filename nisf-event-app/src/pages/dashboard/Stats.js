@@ -5,16 +5,20 @@ import { useAppContext } from '../../context/appContext'
 
 
 const Stats = () => {
-  const { showStats, isLoading, weeklySubmissions } = useAppContext()
+  const { showStats, isLoading, weeklySubmissions, updateSearch } = useAppContext()
 
   useEffect (()=> {
     showStats()
+    updateSearch({ name: 'searchStatus', value:'all' })
+    updateSearch({ name: 'searchType', value:'all' })
     // eslint-disable-next-line
   }, [])
 
   if(isLoading){
     return <Loading center />
   }
+
+
 
   return (
     

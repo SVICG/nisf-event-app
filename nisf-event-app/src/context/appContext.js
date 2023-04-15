@@ -20,6 +20,7 @@ import {
   TOGGLE_ADMIN,
   DELETE_USER_BEGIN,
   HANDLE_CHANGE,
+  SET_SEARCH_STATUS,
   CLEAR_VALUES,
   CREATE_EVENT_BEGIN,
   CREATE_EVENT_ERROR,
@@ -31,6 +32,9 @@ import {
   EDIT_EVENT_BEGIN,
   EDIT_EVENT_SUCCESS,
   EDIT_EVENT_ERROR,
+  EDIT_STATUS_BEGIN,
+  EDIT_STATUS_SUCCESS,
+  EDIT_STATUS_ERROR,
   SHOW_STATS_BEGIN,
   SHOW_STATS_SUCCESS,
   CLEAR_FILTERS,
@@ -49,16 +53,20 @@ const initialState = {
   isLoading: false,
   userLoading: true,
   showAlert: false,
-  toggleAdmin:false,
+  toggleAdmin: false,
   alertText: '',
   alertType: '',
-  isOn:'',
+  isOn: '',
   user: null,
-  county: 'undefined' || '',
   showSidebar: false,
   isEditing: false,
   editEventId: '',
-  location: '',
+  eventAddress1: '',
+  eventAddress2: '',
+  eventCity: '',
+  eventCounty: 'Down',
+  eventCountyOptions: ['Antrim', 'Down', 'Armagh', 'Derry/Londonderry', 'Tyrone', 'Fermanagh'],
+  eventPostalCode: '',
   setLocation: '',
   eventTitle: '',
   capacity: 0,
@@ -94,8 +102,8 @@ const initialState = {
   city: '',
   postalCode: '',
   country: '',
-  county:'',
-  isAdmin: false,
+  county: '',
+  // isAdmin: false,
 
 }
 const AppContext = React.createContext()
@@ -140,7 +148,6 @@ const AppProvider = ({ children }) => {
       const { data } = await axios.post(
         `/api/v1/auth/${endPoint}`,
         currentUser);
-      // console.log(data)
       const { user, county, isAdmin } = data;
       dispatch({
         type: SETUP_USER_SUCCESS,
@@ -232,46 +239,55 @@ const AppProvider = ({ children }) => {
     clearAlert();
   }
 
-const toggleAdmin = async (id, isOn) => {
-  dispatch({type: TOGGLE_ADMIN})
-  try{
+  const toggleAdmin = async (id, isOn) => {
+    dispatch({ type: TOGGLE_ADMIN })
+    try {
 
-    await authFetch.patch(`/auth/${id}`, {
-      isAdmin: !isOn
-  
-    })
-    }catch (error) {
-     console.log(error)
+      await authFetch.patch(`/auth/getAllUsers/${id}`, {
+        isAdmin: !isOn
+
+      })
+    } catch (error) {
+      console.log(error)
     }
-}
-
-const deleteUser = async (userId) => {
-  dispatch({ type: DELETE_USER_BEGIN })
-  try {
-    await authFetch.delete(`/auth/${userId}`)
-    getUsers()
-  } catch (error) {
-    logoutUser()
   }
-}
+
+  const deleteUser = async (userId) => {
+    dispatch({ type: DELETE_USER_BEGIN })
+    try {
+      await authFetch.delete(`/auth/${userId}`)
+      getUsers()
+    } catch (error) {
+      logoutUser()
+    }
+  }
 
   const handleChange = ({ name, value }) => {
     dispatch({ type: HANDLE_CHANGE, payload: { name, value } })
+  }
+
+  const updateSearch = ({ name, value }) => {
+    dispatch({ type: SET_SEARCH_STATUS, payload: { name, value } })
   }
 
   const clearValues = () => {
     dispatch({
       type: CLEAR_VALUES
     })
-    
+
   }
 
   const createEvent = async () => {
     dispatch({ type: CREATE_EVENT_BEGIN })
     try {
+
       const {
         eventTitle,
-        location,
+        eventAddress1,
+        eventAddress2,
+        eventCity,
+        eventCounty,
+        eventPostalCode,
         capacity,
         eventType,
         targetAudience,
@@ -285,7 +301,13 @@ const deleteUser = async (userId) => {
 
       await authFetch.post('/events', {
         eventTitle,
-        location,
+        eventLocation: {
+          eventAddress1: eventAddress1,
+          eventAddress2: eventAddress2,
+          eventCity: eventCity,
+          eventCounty: eventCounty,
+          eventPostalCode: eventPostalCode,
+        },
         capacity,
         eventType,
         targetAudience,
@@ -312,6 +334,7 @@ const deleteUser = async (userId) => {
   const getEvents = async () => {
     const { page, search, searchStatus, searchType, sort } = state
     let url = `/events?page=${page}&status=${searchStatus}&eventType=${searchType}&sort=${sort}`
+    
     if (search) {
       url = url + `&search=${search}`
     }
@@ -319,6 +342,7 @@ const deleteUser = async (userId) => {
     try {
       const { data } = await authFetch(url);
       const { events, totalEvents, numOfPages } = data
+
       dispatch({
         type: GET_EVENT_SUCCESS,
         payload: {
@@ -344,7 +368,11 @@ const deleteUser = async (userId) => {
     try {
       const {
         eventTitle,
-        location,
+        eventAddress1,
+        eventAddress2,
+        eventCity,
+        eventCounty,
+        eventPostalCode,
         capacity,
         eventType,
         targetAudience,
@@ -358,7 +386,13 @@ const deleteUser = async (userId) => {
 
       await authFetch.patch(`/events/${state.editEventId}`, {
         eventTitle,
-        location,
+        eventLocation: {
+          eventAddress1: eventAddress1,
+          eventAddress2: eventAddress2,
+          eventCity: eventCity,
+          eventCounty: eventCounty,
+          eventPostalCode: eventPostalCode,
+        },
         capacity,
         eventType,
         targetAudience,
@@ -375,6 +409,25 @@ const deleteUser = async (userId) => {
     } catch (error) {
       if (error.response.status === 401) {
         dispatch({ type: EDIT_EVENT_ERROR, payload: { msg: error.response.data.msg } })
+      }
+    }
+    clearAlert();
+  }
+
+  const editStatus = async () => {
+    dispatch({ type: EDIT_STATUS_BEGIN })
+
+    try {
+      const { status } = state
+
+      await authFetch.patch(`/events/status/${state.editEventId}`, {
+        status
+      })
+      dispatch({ type: EDIT_STATUS_SUCCESS })
+      dispatch({ type: CLEAR_VALUES })
+    } catch (error) {
+      if (error.response.status === 401) {
+        dispatch({ type: EDIT_STATUS_ERROR, payload: { msg: error.response.data.msg } })
       }
     }
     clearAlert();
@@ -401,7 +454,8 @@ const deleteUser = async (userId) => {
           stats: data.defaultStats,
           weeklySubmissions: data.weeklySubmissions,
           eventTheme: data.eventTheme,
-          eventTypes: data.eventTypes
+          eventTypes: data.eventTypes,
+          eventCounty: data.eventCounty
         },
       });
     } catch (error) {
@@ -422,16 +476,16 @@ const deleteUser = async (userId) => {
     dispatch({ type: GET_CURRENT_USER_BEGIN })
     try {
       const { data } = await authFetch('/auth/getCurrentUser')
-      const { user, county, isAdmin } = data
+      const { user, isAdmin } = data
       dispatch({
         type: GET_CURRENT_USER_SUCCESS,
-        payload: { user, county, isAdmin }
+        payload: { user, isAdmin }
       })
     } catch (error) {
       if (error.response.status === 401) return;
       logoutUser();
     }
-  }
+  };
   useEffect(() => {
     getCurrentUser();
   }, []);
@@ -455,7 +509,6 @@ const deleteUser = async (userId) => {
   }
 
 
-
   useEffect(() => {
     getUsers();
   }, []);
@@ -463,24 +516,26 @@ const deleteUser = async (userId) => {
   return (<AppContext.Provider value={{
     ...state,
     displayAlert,
-    setupUser, 
-    editUser, 
-    toggleSidebar, 
-    logoutUser, 
-    updateUser, 
+    setupUser,
+    editUser,
+    toggleSidebar,
+    logoutUser,
+    updateUser,
     setUpdateUser,
     toggleAdmin,
     deleteUser,
-    handleChange, 
-    clearValues, 
-    createEvent, 
-    getEvents, 
-    setEditEvent, 
-    deleteEvent, 
-    editEvent, 
-    showStats, 
-    clearFilters, 
-    changePage, 
+    handleChange,
+    updateSearch,
+    clearValues,
+    createEvent,
+    getEvents,
+    setEditEvent,
+    deleteEvent,
+    editEvent,
+    editStatus,
+    showStats,
+    clearFilters,
+    changePage,
     getUsers
   }}>{children}</AppContext.Provider>)
 
