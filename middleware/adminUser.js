@@ -1,4 +1,4 @@
-import { BadRequestError } from "../errors/index.js";
+import { BadRequestError } from "../customErrors/index.js";
 
 
 export const adminUser = (req,res,next) => {

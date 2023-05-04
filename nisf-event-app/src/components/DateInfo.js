@@ -1,6 +1,6 @@
 import React from 'react'
 import Wrapper from '../assets/wrappers/EventInfo'
-import moment from 'moment/moment'
+import moment from 'moment'
 
 
 const DateInfo = ({icon, text, id}) => {

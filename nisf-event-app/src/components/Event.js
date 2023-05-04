@@ -1,4 +1,4 @@
-import moment from 'moment/moment'
+import moment from 'moment'
 import React from 'react'
 import Wrapper from '../assets/wrappers/Event'
 import { AiOutlineCalendar, AiOutlineEnvironment, AiOutlineTag } from "react-icons/ai"

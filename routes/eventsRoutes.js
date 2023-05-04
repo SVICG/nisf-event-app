@@ -12,7 +12,6 @@ import adminUser from '../middleware/adminUser.js'
 router.route('/').post(authenticateUser, createEvent).get(authenticateUser, getAllEvents)
 router.route('/:id').delete(authenticateUser, deleteEvent).patch(authenticateUser, updateEvent)
 router.route('/status/:id').patch(authenticateUser, adminUser, updateStatus)
-// router.use(secure)
 router.route('/stats').get(authenticateUser,adminUser, showStats)
 
 

@@ -30,12 +30,13 @@ const Register = () => {
         setValues({ ...values, isMember: !values.isMember })
     }
 
+
     const handleChange = (e) => {
         setValues({ ...values, [e.target.name]: e.target.value })
         validateInput(e)
     }
 
-    // validate password on registrartion
+    // validate password
     const validateInput = (e) => {
         const { name, value } = e.target
         setError(prev => {
@@ -44,7 +45,10 @@ const Register = () => {
                 case "password":
                     if (!value) {
                         stateObj[name] = "Please enter a password";
-                    } else if (values.confirmPassword && value !== values.confirmPassword) {
+                    } else if (value.length < 6  ){
+                        stateObj[name] = "Password must be 6 characters long"
+                    }
+                     else if (values.confirmPassword && value !== values.confirmPassword) {
                         stateObj["confirmPassword"] = "Passwords do not match.";
                     } else {
                         stateObj["confirmPassword"] = values.confirmPassword ? "" : error.confirmPassword;
@@ -67,8 +71,8 @@ const Register = () => {
 
     const onSubmit = (e) => {
         e.preventDefault()
-        const { name, lastName, email, password, isMember, isAdmin } = values
-        if (!email || !password || (!isMember && !name)) {
+        const { name, lastName, email, password, confirmPassword, isMember, isAdmin } = values
+        if (!email || !password || (!isMember && (!name || !confirmPassword))) {
             displayAlert();
             return
         }

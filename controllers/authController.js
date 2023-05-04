@@ -1,42 +1,33 @@
 import User from "../models/User.js"
 import { StatusCodes } from 'http-status-codes'
-import { BadRequestError, UnauthenticatedError } from '../errors/index.js'
+import { BadRequestError, UnauthenticatedError } from '../customErrors/index.js'
 import attachCookie from "../utils/attachCookie.js"
 
 
-
-//next passes error on to middleware
 const register = async (req, res) => {
-    try {
-        const { name, lastName, email, password } = req.body;
+    const { name, lastName, email, password } = req.body;
 
-        if (!name || !email || !password) {
-            throw new BadRequestError('Please provide all the required details')
-        }
-
-        const userAlreadyExists = await User.findOne({ email });
-        if (userAlreadyExists) {
-            throw new BadRequestError('Email already in use')
-        }
-
-        const user = await User.create({ name, lastName, email, password })
-        const token = user.createJWT()
-
-        attachCookie({ res, token });
-
-        res.status(StatusCodes.CREATED).json({
-            user: {
-                email: user.email,
-                lastName: user.lastName,
-                name: user.name
-            },
-
-        })
-    } catch (error) {
-        // pass to error handler 
-        res.status(500).json({ msg: 'There was an error' })
-        console.log(error)
+    if (!name || !email || !password) {
+        throw new BadRequestError('Please provide all the required details')
     }
+
+    const userAlreadyExists = await User.findOne({ email });
+    if (userAlreadyExists) {
+        throw new BadRequestError('Email already in use')
+    }
+
+    const user = await User.create({ name, lastName, email, password })
+    const token = user.createJWT()
+
+    attachCookie({ res, token });
+
+    res.status(StatusCodes.CREATED).json({
+        user: {
+            email: user.email,
+            lastName: user.lastName,
+            name: user.name
+        },
+    })
 }
 
 const login = async (req, res) => {
@@ -44,12 +35,10 @@ const login = async (req, res) => {
     if (!email || !password) {
         throw new BadRequestError('Please provide the required info');
     }
-
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
         throw new UnauthenticatedError('Invalid Credentials');
     }
-  
     const isPasswordCorrect = await user.comparePassword(password);
     if (!isPasswordCorrect) {
         throw new UnauthenticatedError('Invalid Credentials');
@@ -59,9 +48,6 @@ const login = async (req, res) => {
     user.password = undefined;
     attachCookie({ res, token });
     res.status(StatusCodes.OK).json({ user });
-
-    //Uncomment after testing
-    // res.send('login')
 }
 
 
@@ -72,9 +58,7 @@ const updateUser = async (req, res) => {
     if (!email || !name || !lastName || !county) {
         throw new BadRequestError('Please provide all required values')
     }
-
     const user = await User.findOne({ _id: req.user.userId });
-
     user.email = email
     user.name = name
     user.lastName = lastName
@@ -85,32 +69,26 @@ const updateUser = async (req, res) => {
     user.orgAddress.county = county
     user.orgAddress.country = country
 
-
     await user.save()
 
     const token = user.createJWT()
     attachCookie({ res, token });
-    res.status(StatusCodes.OK).json({ user, userCounty: user.county });
+    res.status(StatusCodes.OK).json({ user });
 
 }
 
 const editUser = async (req, res) => {
 
-    const { email, name, lastName, organisation, address, city, postalCode, country, county } = req.body
-
+    const { email, name, lastName } = req.body
     const { id: editUserId } = req.params
 
     if (!email || !name || !lastName) {
         throw new BadRequestError('Please provide all required values')
     }
-
-
     const updatedUser = await User.findOneAndUpdate({ _id: editUserId }, req.body, {
-
         new: true,
         runValidators: true,
     })
-
     res.status(StatusCodes.OK).json({ updatedUser })
 
 }
@@ -164,6 +142,5 @@ const getAllUsers = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ users })
 }
-
 
 export { register, login, updateUser, editUser, getCurrentUser, getAllUsers, makeAdmin, deleteUser, logout }

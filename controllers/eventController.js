@@ -1,7 +1,7 @@
 import Event from '../models/Event.js'
 import User from '../models/User.js';
 import { StatusCodes } from 'http-status-codes'
-import { BadRequestError, NotFoundError, UnauthenticatedError } from '../errors/index.js'
+import { BadRequestError, NotFoundError, UnauthenticatedError } from '../customErrors/index.js'
 import checkPermissions from '../utils/checkPermissions.js';
 import mongoose from 'mongoose';
 import moment from 'moment';
@@ -16,7 +16,7 @@ const createEvent = async (req, res) => {
         throw new BadRequestError('Please provide all values')
     }
 
-     req.body.createdBy = req.user.userId
+    req.body.createdBy = req.user.userId
 
     const event = await Event.create(req.body)
     res.status(StatusCodes.CREATED).json({ event })
@@ -26,23 +26,19 @@ const createEvent = async (req, res) => {
 
 
 const getAllEvents = async (req, res) => {
-    
+
     const { status, eventType, date, theme, targetAudience, sort, search } = req.query
-    //return all jobs that meet the 'status - query'
+    //return events that meet the query
     const user = await User.findOne({ _id: req.user.userId });
     const queryObject = {}
-
     // check if user is admin, if so, allow them to see all events
     if (user.isAdmin) {
-
     } else {
-        // filter events by createdBy field, which should match the userId of the current user
+       // filter events by createdBy field, which should match the userId of the current user
         queryObject.createdBy = req.user.userId
     }
 
-
     if (status && status !== 'all') {
-
         queryObject.status = status
     }
     if (eventType && eventType !== 'all') {
@@ -56,9 +52,7 @@ const getAllEvents = async (req, res) => {
     }
     if (search) {
         queryObject.eventTitle = { $regex: search, $options: 'i' }
-
     }
-
     let results = Event.find(queryObject)
 
     if (sort === 'newest') {
@@ -69,7 +63,7 @@ const getAllEvents = async (req, res) => {
         results = results.sort('createdAt')
     }
 
-    //pagination - if page is not provided have 1 as default
+    //pagination - 1 page is default
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || 20
     //calculate how many items to skip
@@ -115,32 +109,29 @@ const updateStatus = async (req, res) => {
     const { status } = req.body
     const event = await Event.findOne({ _id: eventId })
     const user = await User.findOne({ _id: event.createdBy });
-    
 
     if (!event) {
         throw new NotFoundError(`Cannot find event ${eventId}`)
     }
-
-    //will need to use alternative method if needing to fire hooks
     const updatedEvent = await Event.findOneAndUpdate({ _id: eventId }, req.body, {
         new: true,
         runValidators: true,
     })
-    if (status==='approved') {
-    try {
-        await emailStatusUpdate({
-          name: user.name,
-          email: user.email,
-          subject: 'Your event has been approved',
-        });
-    
-        res.status(StatusCodes.OK)
-      } catch (err) {
-        console.log(err);
-        return 
-      }
-    }
+    if (status === 'approved') {
+        //email sent to user on approval
+        try {
+            await emailStatusUpdate({
+                name: user.name,
+                email: user.email,
+                subject: 'Your event has been approved',
+            });
 
+            res.status(StatusCodes.OK)
+        } catch (err) {
+            console.log(err);
+            return
+        }
+    }
     res.status(StatusCodes.OK).json({ updatedEvent })
 }
 
@@ -168,7 +159,6 @@ const showStats = async (req, res) => {
         { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
         { $group: { _id: '$status', count: { $sum: 1 } } },
     ])
-
     //return stats as an object instead of array
     stats = stats.reduce((acc, curr) => {
         const { _id: title, count } = curr
@@ -176,7 +166,6 @@ const showStats = async (req, res) => {
         return acc
 
     }, {})
-
     //default for new user / no events
     const defaultStats = {
         pending: stats.pending || 0,
@@ -197,7 +186,6 @@ const showStats = async (req, res) => {
         { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
         { $group: { _id: '$eventType', count: { $sum: 1 } } },
     ])
-
 
     let weeklySubmissions = await Event.aggregate([
         { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },

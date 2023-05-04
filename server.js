@@ -23,7 +23,7 @@ import authRouter from './routes/authRoutes.js'
 import eventsRouter from './routes/eventsRoutes.js'
 
 
-//middleware
+//import middleware
 import notFoundMiddleware from './middleware/not-found.js'
 import errorHandlerMiddleware from './middleware/error-handler.js'
 
@@ -37,18 +37,15 @@ if (process.env.NODE_ENV !== 'prodution' || !process.env.NODE_ENV === 'test') {
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
+//built-in middleware
 app.use(express.static(path.resolve(__dirname, './nisf-event-app/build')))
 app.use(express.json());
+
 app.use(helmet())
 app.use(xss())
 app.use(mongoSanitize())
 
-
 app.use(cookieParser());
-
-// app.get('/',(req, res) => {
-//     res.json({msg: 'Welcome'})
-// })
 
 app.get('/api/v1', (req, res) => {
     res.json({ msg: 'API' })
@@ -61,17 +58,15 @@ app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, './nisf-event-app/build', 'index.html'))
 })
 
-//looking for all htttp
+//middleware after searching all routes
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
 
-
 const port = process.env.PORT || 5000
-
 
 const start = async () => {
     try {
-        let dbUrl = process.env.MONGO_URL // default to the main DB URL
+        let dbUrl = process.env.MONGO_URL // default to the main DB 
         if (process.env.NODE_ENV === 'test') {
             dbUrl = process.env.TEST_MONGO_URL // use test DB URL if NODE_ENV is 'test'
         }

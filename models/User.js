@@ -54,14 +54,6 @@ const UserSchema = new mongoose.Schema({
         country: { type: String, default: 'country' },
     },
 
-    //add address
-    // county: {
-    //     type: String,
-    //     maxlength: 20,
-    //     trim: true,
-    //     default: 'County'
-    // },
-
     isAdmin: {
         type: Boolean,
         
@@ -77,11 +69,11 @@ const UserSchema = new mongoose.Schema({
 
 })
 
-//hash user password
+//hash user password when 'save' is triggered
 UserSchema.pre('save', async function () {
-    //console.log(this.modifiedPaths())
     if (!this.isModified('password')) return
     const salt = await bcrypt.genSalt(10);
+    //hash password
     this.password = await bcrypt.hash(this.password, salt)
 })
 

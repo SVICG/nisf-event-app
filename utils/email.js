@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 import * as path from 'path'
 import hbs from 'nodemailer-express-handlebars';
-
+// Adapted from: https://www.freecodecamp.org/news/use-nodemailer-to-send-emails-from-your-node-js-server/
 
 const emailStatusUpdate = async (options) => {
    

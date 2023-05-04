@@ -1,4 +1,4 @@
-import { UnauthenticatedError } from '../errors/index.js'
+import { UnauthenticatedError } from '../customErrors/index.js'
 
 const checkPermissions = (requestUser, resourceUserId) => {
       

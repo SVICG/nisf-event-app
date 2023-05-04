@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 import { useAppContext } from '../context/appContext'
 import { useNavigate } from 'react-router-dom';
 
@@ -39,7 +39,7 @@ const PieCharts = ({ data, filterName }) => {
 
     <ResponsiveContainer width='100%' height={300}>
       <PieChart data={data} margin={{ top: 20 }} filterName={filterName}>
-        {/* <Legend layout="vertical" verticalAlign="top" align="left" /> */}
+       
         <Pie
           dataKey="count"
           isAnimationActive={true}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useAppContext } from '../context/appContext'
 import Wrapper from '../assets/wrappers/Event'
 import UserInfo from './UserInfo'
@@ -39,7 +39,7 @@ const User = ({_id, name, lastName, email, orgAddress, isAdmin}) => {
         </div>
         <div className="actions">
            
-           {/* {`status ${status}`} */}
+        
            <Link to='/update-users' className='btn edit-btn'  onClick={()=> setUpdateUser(_id)}>
                Edit
            </Link>
