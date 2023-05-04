@@ -13,8 +13,7 @@ const Wrapper = styled.aside`
     align-items:center;
     background: var(--bkcolor);
     z-index: -1;
-    opacity: 0;
-   
+    opacity: 0; 
     
 }
 

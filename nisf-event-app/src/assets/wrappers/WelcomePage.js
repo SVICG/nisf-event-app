@@ -11,7 +11,8 @@ nav {
 }
 
 .logo {
-  max-height: 100px;
+  max-height: 200px;
+  display: flex;
  
 }
 
@@ -39,7 +40,7 @@ nav {
       column-gap: 3rem;
     }
     .main-img {
-      display: block;
+      display: flex;
       
     }
   }

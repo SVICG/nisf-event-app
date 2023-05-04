@@ -15,7 +15,6 @@ const Wrapper = styled.section `
 
     @media (min-width: 992px) {
         .dashboard{
-            // auto - size of column determuined by container / 1fr is 1 fraction so splits columns evenly
             grid-template-columns: auto 1fr;
         }
 

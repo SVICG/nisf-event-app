@@ -5,7 +5,7 @@ import Wrapper from '../../assets/wrappers/DashboardFormPage'
 import { useState } from 'react'
 
 const Profile = () => {
-  const { user, showAlert, displayAlert, updateUser, isLoading, isEditing } = useAppContext()
+  const { user, showAlert, displayAlert, updateUser, isLoading } = useAppContext()
 
   const [name, setName] = useState(user?.name)
   const [email, setEmail] = useState(user?.email)

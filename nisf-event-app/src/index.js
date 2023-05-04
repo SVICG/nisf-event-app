@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'normalize.css';
 import './index.css';
+import './assets/fonts/VitesseSans-Bold.otf'
 import App from './App';
 
 import {AppProvider} from './context/appContext';

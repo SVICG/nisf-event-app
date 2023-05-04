@@ -107,7 +107,7 @@ const reducer = (state, action) => {
     }
 
     if (action.type === SET_UPDATE_USER) {
-        // grab USER from event array we have in the state - if the event matches the one being passed in (payload) then return the details
+        // grab USER from user array we have in the state - if the event matches the one being passed in (payload) then return the details
         const user = state.users.find((user) => user._id === action.payload.id)
         const {
             _id,
@@ -121,11 +121,11 @@ const reducer = (state, action) => {
                 postalCode,
                 country,
                 county
-              },
+            },
 
 
         } = user
-        console.log(_id);
+        
         // then update the state
         return {
             ...state,
@@ -208,10 +208,10 @@ const reducer = (state, action) => {
         };
     }
 
-   if(action.type === DELETE_USER_BEGIN) {
-    return { ...state, isLoading: true }
-    
-   }
+    if (action.type === DELETE_USER_BEGIN) {
+        return { ...state, isLoading: true }
+
+    }
 
 
 
@@ -226,7 +226,7 @@ const reducer = (state, action) => {
     if (action.type === SET_SEARCH_STATUS) {
         return {
             ...state,
-           [action.payload.name]: action.payload.value
+            [action.payload.name]: action.payload.value
         };
     }
 
@@ -240,7 +240,12 @@ const reducer = (state, action) => {
             description: '',
             admissionPrice: '',
             startTime: '',
-            endTime: ''
+            endTime: '',
+            eventAddress1: '',
+            eventAddress2: '',
+            eventCity: '',
+            eventPostalCode: '',
+
         }
         return {
             ...state,
@@ -293,13 +298,13 @@ const reducer = (state, action) => {
         const {
             _id,
             eventTitle,
-            eventLocation:{
+            eventLocation: {
                 eventAddress1,
                 eventAddress2,
                 eventCity,
                 eventCounty,
                 eventPostalCode,
-              },
+            },
             capacity,
             eventType,
             targetAudience,

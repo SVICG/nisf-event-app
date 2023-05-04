@@ -47,7 +47,6 @@ const AddEvent = () => {
 
   const [value, setValue] = React.useState([])
 
-
   const handleDates = (value) => {
     const name = 'date'
     setValue([...value, value]);
@@ -66,38 +65,41 @@ const AddEvent = () => {
     e.preventDefault()
     if (!eventTitle || !capacity || !eventType || !description || !startTime || !admissionPrice || !theme) {
       displayAlert()
+      window.scrollTo(0,0);
       return
     }
     if (isEditing) {
       editEvent()
+      window.scrollTo(0,0);
       return
     }
+    window.scrollTo(0,0);
     createEvent()
   }
 
   const handleStatus = (e) => {
+    window.scrollTo(0,0);
     editStatus();
   }
 
-
   return (
-
 
     <Wrapper>
 
       <form noValidate className='form'>
 
-        <h3>{isEditing ? 'edit event' : 'add event'}</h3>
-        {showAlert && <Alert />}
+        <h3 >{isEditing ? 'edit event' : 'add event'}</h3>
+        {showAlert && <Alert/>}
         <div className='form-center'>
           {/* event title */}
-          <FormRow
+          <FormRow   
             type="text"
             labelText="Event Title"
             name="eventTitle"
             value={eventTitle}
             handleChange={handleEventInput}
-            required
+            onInvalid={e => e.target.setCustomValidity('Enter User Name Here')}
+            onInput={e => e.target.setCustomValidity('')}
           />
 
           <h5>Event Location</h5>
@@ -144,7 +146,8 @@ const AddEvent = () => {
           />
           {/* eventType */}
           <FormRowSelect
-            name="event Type"
+            labeltext="Event Type"
+            name="eventType"
             value={eventType}
             handleChange={handleEventInput}
             list={eventTypeOptions}
@@ -242,24 +245,24 @@ const AddEvent = () => {
         </div>
       </form>
 
+{user.isAdmin && ( 
       <form className='form'>
         <h3>Update Event Status</h3>
         {/* event status */}
-        {user.isAdmin && (
+       
           <FormRowSelect
             name="status"
             value={status}
             handleChange={handleEventInput}
             list={statusOptions}
-          />)}
-
+          />
         <div className='btn-container'>
           <button type='submit' className='btn btn-block submit-btn' onClick={handleStatus} disabled={isLoading}>
             Submit
           </button>
         </div>
       </form>
-
+)}
     </Wrapper>
 
   )

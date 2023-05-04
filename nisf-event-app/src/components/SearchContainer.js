@@ -2,10 +2,11 @@ import React from 'react'
 import { FormRow, FormRowSelect } from '.'
 import Wrapper from '../assets/wrappers/SearchContainer'
 import { useAppContext } from '../context/appContext'
-
+import { useState, useMemo } from 'react'
 
 const SearchContainer = () => {
 
+  const [localSearch, setLocalSearch] = useState('')
   const {
     isLoading,
     search,
@@ -25,9 +26,23 @@ const SearchContainer = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLocalSearch('');
     clearFilters();
 
   }
+
+  const debounce = () => {
+    let timeoutID;
+    return (e) => { setLocalSearch(e.target.value)
+    clearTimeout(timeoutID)
+    timeoutID = setTimeout(()=>{
+      handleChange({ name: e.target.name, value: e.target.value })
+    },500)
+  }
+  }
+
+  //prevent re-renders
+  const optDebounce = useMemo(() => debounce(), [])
 
   return (
     <Wrapper>
@@ -38,8 +53,8 @@ const SearchContainer = () => {
           <FormRow
             type='text'
             name='search'
-            value={search}
-            handleChange={handleSearch}
+            value={localSearch}
+            handleChange={optDebounce}
           />
           {/* status */}
           <FormRowSelect
@@ -64,11 +79,11 @@ const SearchContainer = () => {
             handleChange={handleSearch}
             list={sortOptions}
           />
-          <button 
-            className='btn btn-block btn-danger' 
-            disabled={isLoading} 
+          <button
+            className='btn btn-block btn-danger'
+            disabled={isLoading}
             onClick={handleSubmit}>
-              Clear
+            Clear
           </button>
         </div>
       </form>

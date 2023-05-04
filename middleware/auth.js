@@ -2,8 +2,7 @@ import  jwt  from "jsonwebtoken"
 import { UnauthenticatedError } from "../errors/index.js"
 
 const auth = async (req, res, next) => {
-      
-    console.log(req.cookies)
+ 
     const token = req.cookies.token
    
 

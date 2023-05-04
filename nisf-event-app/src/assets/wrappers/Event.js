@@ -4,8 +4,6 @@ import styled from 'styled-components';
 const Wrapper = styled.article`
 
 background: transparent;
-/* display: grid;
-grid-template-rows: 1fr auto; */
 box-shadow: 0px;
 border-radius: 0.3px;
 margin: 5px 10px;
@@ -18,8 +16,6 @@ header {
     padding: 0.5rem 1rem;
     border-bottom: 1px solid;
     display: grid;
-    
-    /* grid-template-columns: auto 1fr; */
     align-items: center;
 }
 
@@ -104,8 +100,8 @@ footer{
 }
 
 .delete-btn {
-    color: darkred;
-    background-color: pink;
+    color: var(--warning-color);
+    background-color: var(--warning-bk);
     
 }
 

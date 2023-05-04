@@ -30,9 +30,10 @@ import errorHandlerMiddleware from './middleware/error-handler.js'
 import cookieParser from 'cookie-parser'
 
 //display method route and response in console
-if (process.env.NODE_ENV !== 'prodution') {
+if (process.env.NODE_ENV !== 'prodution' || !process.env.NODE_ENV === 'test') {
     app.use(morgan('dev'))
 }
+
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -68,12 +69,19 @@ app.use(errorHandlerMiddleware)
 const port = process.env.PORT || 5000
 
 
-
 const start = async () => {
     try {
-        await connectDB(process.env.MONGO_URL)
+        let dbUrl = process.env.MONGO_URL // default to the main DB URL
+        if (process.env.NODE_ENV === 'test') {
+            dbUrl = process.env.TEST_MONGO_URL // use test DB URL if NODE_ENV is 'test'
+        }
+        await connectDB(dbUrl)
+
         app.listen(port, () => {
-            console.log(`Server is listening on port ${port}`)
+            if (!process.env.NODE_ENV === 'test') {
+                console.log(`Server is listening on port ${port}`)
+            };
+            
         })
     } catch (error) {
         console.log(error)
@@ -81,3 +89,5 @@ const start = async () => {
 }
 
 start()
+
+export default app;

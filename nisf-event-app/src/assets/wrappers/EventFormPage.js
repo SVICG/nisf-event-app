@@ -15,12 +15,10 @@ overflow: hidden;
 
 .date-row{
     display: flex;
-    /* width: 50%; */
 }
 
 .label-row{
     display: flex;
-    /* width: 50%; */
 }
 
 .form-center {
@@ -31,15 +29,21 @@ overflow: hidden;
 .form-center button {
     align-self: center;
     height: 35px;
-    margin-top: 1rem;
-    
+    margin-top: 1rem; 
 
 }
 
+.clear-btn {
+    margin-left: 1rem;
+    color: var(--warning-color);
+    background-color: var(--warning-bk);
+}
 
+.highlight {
+  border: 2px solid red;
+}
 
 .help-tip{
-    /* position: absolute; */
     top: 18px;
     right: 18px;
     margin: 0.25rem 0 0 0.5rem;
@@ -104,7 +108,6 @@ overflow: hidden;
     width:100%;
     height:40px;
     content:'';
-    /* position: absolute; */
     top:-40px;
     left:0;
 }

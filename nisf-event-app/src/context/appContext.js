@@ -1,4 +1,4 @@
-import React, { useReducer, useContext, } from 'react'
+import React, { useReducer, useContext, useEffect } from 'react'
 import axios from 'axios'
 import reducer from './reducer'
 
@@ -44,11 +44,9 @@ import {
   GET_USERS_BEGIN,
   GET_USERS_SUCCESS
 } from './action'
-import { useEffect } from 'react'
-// add useContext for on eless import -m not necesaary but good for bigger projects
 
 
-//set up jobs globally to enableboth adding, editing & grabing values
+//set up events and users globally to enable both adding, editing & grabing values
 const initialState = {
   isLoading: false,
   userLoading: true,
@@ -103,8 +101,6 @@ const initialState = {
   postalCode: '',
   country: '',
   county: '',
-  // isAdmin: false,
-
 }
 const AppContext = React.createContext()
 
@@ -130,18 +126,25 @@ const AppProvider = ({ children }) => {
     }
   );
 
+  //displays alerts on form submits
+  const displayAlert = () => {
+    dispatch({ type: DISPLAY_ALERT });
+    clearAlert();
+  };
+
+  //Clears alerts following form submits
   const clearAlert = () => {
     setTimeout(() => {
       dispatch({ type: CLEAR_ALERT });
     }, 3000);
   };
 
-  const displayAlert = () => {
-    dispatch({ type: DISPLAY_ALERT });
-    clearAlert();
-  };
-
-
+  //calls reducer to open and close navigation sidebar
+  const toggleSidebar = () => {
+    dispatch({ type: TOGGLE_SIDEBAR })
+  }
+  
+  //Begins call to register or login a user depending on endpoint
   const setupUser = async ({ currentUser, endPoint, alertText }) => {
     dispatch({ type: SETUP_USER_BEGIN })
     try {
@@ -163,16 +166,15 @@ const AppProvider = ({ children }) => {
     clearAlert()
   };
 
-  const toggleSidebar = () => {
-    dispatch({ type: TOGGLE_SIDEBAR })
-  }
 
+  //calls reducer to logout a user
   const logoutUser = async () => {
     await authFetch.get('/auth/logout')
     dispatch({ type: LOGOUT_USER });
 
   }
 
+  //calls reducer to return User details from the state
   const setUpdateUser = (id) => {
     dispatch({ type: SET_UPDATE_USER, payload: { id } })
   }
@@ -255,7 +257,7 @@ const AppProvider = ({ children }) => {
   const deleteUser = async (userId) => {
     dispatch({ type: DELETE_USER_BEGIN })
     try {
-      await authFetch.delete(`/auth/${userId}`)
+      await authFetch.delete(`/auth/getAllUsers/${userId}`)
       getUsers()
     } catch (error) {
       logoutUser()
@@ -334,7 +336,7 @@ const AppProvider = ({ children }) => {
   const getEvents = async () => {
     const { page, search, searchStatus, searchType, sort } = state
     let url = `/events?page=${page}&status=${searchStatus}&eventType=${searchType}&sort=${sort}`
-    
+
     if (search) {
       url = url + `&search=${search}`
     }
@@ -542,11 +544,9 @@ const AppProvider = ({ children }) => {
 }
 
 
-
+//custom hook to invoke context
 const useAppContext = () => {
   return useContext(AppContext)
 }
-
-
 
 export { AppProvider, useAppContext, initialState }

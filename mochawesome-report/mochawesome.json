@@ -1,0 +1,408 @@
+{
+  "stats": {
+    "suites": 5,
+    "tests": 9,
+    "passes": 9,
+    "pending": 0,
+    "failures": 0,
+    "start": "2023-05-02T11:10:43.097Z",
+    "end": "2023-05-02T11:10:44.744Z",
+    "duration": 1647,
+    "testsRegistered": 9,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b142d071-f118-4608-94bf-d44ea1b23191",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [
+        {
+          "title": "\"before all\" hook in \"{root}\"",
+          "fullTitle": "\"before all\" hook in \"{root}\"",
+          "timedOut": false,
+          "duration": 804,
+          "state": null,
+          "speed": null,
+          "pass": false,
+          "fail": false,
+          "pending": false,
+          "context": null,
+          "code": "const result = await chai\n    .request(app)\n    .post(register)\n    .send(preSaveUser)\nexpect(result.status).to.equal(201);\nconst cookie = result.header['set-cookie'];\ntoken = cookie.map((cookie) => cookie.split(';')[0].split('=')[1]).join(';')",
+          "err": {},
+          "uuid": "ad5ec1bd-618f-4509-885f-98ee40209f0b",
+          "parentUUID": "b142d071-f118-4608-94bf-d44ea1b23191",
+          "isHook": true,
+          "skipped": false
+        }
+      ],
+      "afterHooks": [
+        {
+          "title": "\"after all\" hook: drop test db in \"{root}\"",
+          "fullTitle": "\"after all\" hook: drop test db in \"{root}\"",
+          "timedOut": false,
+          "duration": 50,
+          "state": null,
+          "speed": null,
+          "pass": false,
+          "fail": false,
+          "pending": false,
+          "context": null,
+          "code": "await\n    User.remove({});",
+          "err": {},
+          "uuid": "486f836c-01ba-486f-984d-316f4541b253",
+          "parentUUID": "b142d071-f118-4608-94bf-d44ea1b23191",
+          "isHook": true,
+          "skipped": false
+        }
+      ],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "5626ae6f-ea28-4426-9c4a-2ee6b9ac5c6d",
+          "title": "POST - Register user",
+          "fullFile": "C:\\Users\\emitr\\Desktop\\NISF Event App\\test\\routes\\users.test.js",
+          "file": "\\test\\routes\\users.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should create a new user if email does not already exist",
+              "fullTitle": "POST - Register user Should create a new user if email does not already exist",
+              "timedOut": false,
+              "duration": 145,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "try {\n    const result = await chai\n        .request(app)\n        .post(register)\n        .send(user)\n    expect(result.status).to.equal(201);\n    expect(result.body).not.to.be.empty;\n} catch (error) {\n    console.log(error)\n}",
+              "err": {},
+              "uuid": "5dcde393-6266-44aa-9a20-49d5719bb839",
+              "parentUUID": "5626ae6f-ea28-4426-9c4a-2ee6b9ac5c6d",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should return 400 if a name is not submitted",
+              "fullTitle": "POST - Register user Should return 400 if a name is not submitted",
+              "timedOut": false,
+              "duration": 10,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "try {\n    const result = await chai\n        .request(app)\n        .post(register)\n        .send(missingDataUser)\n    expect(result.status).to.equal(400);\n    expect(result.body).not.to.be.empty;\n    expect(error.response.text).to.equal('{\"error\":\"Please provide all the required details\"}');\n} catch (error) {\n    console.log(error);\n}",
+              "err": {},
+              "uuid": "b81ed515-d564-40e0-a7b4-ca7a482e8484",
+              "parentUUID": "5626ae6f-ea28-4426-9c4a-2ee6b9ac5c6d",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should return 400 if email is in use",
+              "fullTitle": "POST - Register user Should return 400 if email is in use",
+              "timedOut": false,
+              "duration": 40,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "try {\n    await chai\n        .request(app)\n        .post(register)\n        .send(preSaveUser)\n} catch (error) {\n    expect(error.status).to.equal(400);\n    expect(error.response.text).to.equal('{\"error\":\"Email already in use\"}');\n}",
+              "err": {},
+              "uuid": "2c05e69b-3243-4e4a-9f1e-f5ca2382c7e3",
+              "parentUUID": "5626ae6f-ea28-4426-9c4a-2ee6b9ac5c6d",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "5dcde393-6266-44aa-9a20-49d5719bb839",
+            "b81ed515-d564-40e0-a7b4-ca7a482e8484",
+            "2c05e69b-3243-4e4a-9f1e-f5ca2382c7e3"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 195,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 5000
+        },
+        {
+          "uuid": "ba9e6320-6aeb-4612-abaf-eb5bf7922abc",
+          "title": "POST - Login User",
+          "fullFile": "C:\\Users\\emitr\\Desktop\\NISF Event App\\test\\routes\\users.test.js",
+          "file": "\\test\\routes\\users.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should return a status 200",
+              "fullTitle": "POST - Login User should return a status 200",
+              "timedOut": false,
+              "duration": 100,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "try {\n    const result = await chai\n        .request(app)\n        .post(login)\n        .send(preSaveUser)\n    const cookie = result.header['set-cookie'];\n    token = cookie.map((cookie) => cookie.split(';')[0].split('=')[1]).join(';')\n    expect(result.body).not.to.be.empty;\n    expect(result.status).to.equal(200);\n} catch (error) {\n    throw new Error(error)\n}",
+              "err": {},
+              "uuid": "368889d0-ee92-430d-8dd1-4e3cfc2f90bb",
+              "parentUUID": "ba9e6320-6aeb-4612-abaf-eb5bf7922abc",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should return a status 401 if password is incorrect",
+              "fullTitle": "POST - Login User should return a status 401 if password is incorrect",
+              "timedOut": false,
+              "duration": 102,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "try {\n    const result = await chai\n        .request(app)\n        .post(login)\n        .send(wrongPassword)\n    expect(result.status).to.equal(401);\n} catch (error) {\n    expect(error.response.text).to.equal('{\"error\":\"Invalid Credentials\"}');\n}",
+              "err": {},
+              "uuid": "b6e42c05-5b67-4538-8010-0ee3168793f4",
+              "parentUUID": "ba9e6320-6aeb-4612-abaf-eb5bf7922abc",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should return a status 401 if no user with email is registered",
+              "fullTitle": "POST - Login User should return a status 401 if no user with email is registered",
+              "timedOut": false,
+              "duration": 45,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "try {\n    const result = await chai\n        .request(app)\n        .post(login)\n        .send(badEmailLogin)\n    expect(result.status).to.equal(401);\n} catch (error) {\n    expect(error.response.text).to.equal('{\"error\":\"Invalid Credentials\"}');\n}",
+              "err": {},
+              "uuid": "93065b35-a305-4df8-9130-435005803069",
+              "parentUUID": "ba9e6320-6aeb-4612-abaf-eb5bf7922abc",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "368889d0-ee92-430d-8dd1-4e3cfc2f90bb",
+            "b6e42c05-5b67-4538-8010-0ee3168793f4",
+            "93065b35-a305-4df8-9130-435005803069"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 247,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 5000
+        },
+        {
+          "uuid": "cca435f3-e9a3-4903-a0a9-b1c654dbd255",
+          "title": "GET - User",
+          "fullFile": "C:\\Users\\emitr\\Desktop\\NISF Event App\\test\\routes\\users.test.js",
+          "file": "\\test\\routes\\users.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"GET - User\"",
+              "fullTitle": "GET - User \"before all\" hook in \"GET - User\"",
+              "timedOut": false,
+              "duration": 102,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const result = await chai\n    .request(app)\n    .post(login)\n    .send(preSaveUser)\nconst cookie = result.header['set-cookie'];\ntoken = cookie.map((cookie) => cookie.split(';')[0].split('=')[1]).join(';')",
+              "err": {},
+              "uuid": "85273ebf-af76-491c-964d-55e5d5bb39b6",
+              "parentUUID": "cca435f3-e9a3-4903-a0a9-b1c654dbd255",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should get the current user details",
+              "fullTitle": "GET - User should get the current user details",
+              "timedOut": false,
+              "duration": 38,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const result = await chai.request(app)\n    .get(getUser)\n    .set('Cookie', `token=${token}`);\nconsole.log(result.body.user)\nexpect(result.status).to.equal(200);\nexpect(result.body.user.name).to.equal('Patrick');",
+              "err": {},
+              "uuid": "686be237-5876-42c6-971b-d887f7a407a7",
+              "parentUUID": "cca435f3-e9a3-4903-a0a9-b1c654dbd255",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "686be237-5876-42c6-971b-d887f7a407a7"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 38,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 5000
+        },
+        {
+          "uuid": "19a9f150-4120-49ff-815d-f9bb85510938",
+          "title": "Update",
+          "fullFile": "C:\\Users\\emitr\\Desktop\\NISF Event App\\test\\routes\\users.test.js",
+          "file": "\\test\\routes\\users.test.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"Update\"",
+              "fullTitle": "Update \"before all\" hook in \"Update\"",
+              "timedOut": false,
+              "duration": 104,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const result = await chai\n    .request(app)\n    .post(login)\n    .send(preSaveUser)\nconst cookie = result.header['set-cookie'];\ntoken = cookie.map((cookie) => cookie.split(';')[0].split('=')[1]).join(';')",
+              "err": {},
+              "uuid": "25fcd27c-889b-4fb4-b5d8-b51b3b28dc08",
+              "parentUUID": "19a9f150-4120-49ff-815d-f9bb85510938",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should update the current user",
+              "fullTitle": "Update should update the current user",
+              "timedOut": false,
+              "duration": 80,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const res = await chai.request(app)\n    .patch(updateUser)\n    .set('Cookie', `token=${token}; path=/; httpOnly`)\n    .send(updatedUser);\nexpect(res.status).to.equal(200);\nexpect(res.body.user).to.have.property('name', 'Valerie');\nexpect(res.body.user).to.have.property('lastName', 'Pearce');\nexpect(res.body.user).to.have.property('email', 'valerie@gmail.com');",
+              "err": {},
+              "uuid": "af3c501c-f59c-46ff-9549-f2ad383e82cd",
+              "parentUUID": "19a9f150-4120-49ff-815d-f9bb85510938",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "af3c501c-f59c-46ff-9549-f2ad383e82cd"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 80,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 5000
+        },
+        {
+          "uuid": "2c666e6b-acd1-4e49-a017-3b6fecc4fe72",
+          "title": "GET - Logout User",
+          "fullFile": "C:\\Users\\emitr\\Desktop\\NISF Event App\\test\\routes\\users.test.js",
+          "file": "\\test\\routes\\users.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should logout a user",
+              "fullTitle": "GET - Logout User should logout a user",
+              "timedOut": false,
+              "duration": 13,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const res = await chai.request(app)\n    .get('/logout');\nexpect(res).to.have.status(200);",
+              "err": {},
+              "uuid": "731bc772-da15-4ac1-8800-813dbc25d15c",
+              "parentUUID": "2c666e6b-acd1-4e49-a017-3b6fecc4fe72",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "731bc772-da15-4ac1-8800-813dbc25d15c"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 13,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 5000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 5000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "10.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": null,
+      "version": "6.2.0"
+    }
+  }
+}

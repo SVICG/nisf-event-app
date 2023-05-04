@@ -5,9 +5,8 @@ const Wrapper = styled.section`
 
 padding: 2rem;
 background-color: white;
-
 border-bottom: 5px solid ${(props) => props.color};
-
+box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
 header {
     display: flex;
@@ -16,7 +15,6 @@ header {
 }
 
 .count{
-   
     display: block;
     font-size: 40px;
     color: ${(props) => props.color};
@@ -50,7 +48,5 @@ header {
     row-gap: 1rem;
 }
 }
-
-
 `
 export default Wrapper;

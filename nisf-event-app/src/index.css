@@ -8,6 +8,11 @@
 
 /* fonts */
 @import url('https://fonts.googleapis.com/css2?family=Karla&family=Montserrat&display=swap');
+@font-face {
+  font-family: "VitesseSans-Medium";
+  src: url("./assets/fonts/VitesseSans-Medium.otf") format('opentype');
+  font-weight:bold;
+}
 
 html {
   font-size: 100%;
@@ -15,7 +20,8 @@ html {
 
 :root {
 /* fonts */
---headingFont: 'Montserrat', Sans-Serif;
+
+--headingFont: 'VitesseSans-Medium', 'Montserrat', Sans-Serif;
 --bodyFont: 'Karla', Sans-Serif;
 --small-text: 0.875rem;
 --extra-small-text: 0.7em;
@@ -30,6 +36,8 @@ html {
 /* other */
 --nav-height: 17vh;
 --borderRadius: 8px;
+--warning-color: #8b0000;
+--warning-bk: #ffc0cb;
 
 };
 
@@ -80,6 +88,13 @@ h1 {
   font-size: 3.052rem;
 }
 
+h2 {
+  margin-top: 1rem;
+  font-size: 2.5rem;
+  font-weight: 300;
+  padding-left: 1.5rem;
+}
+
 h3 {
   font-size: 2rem;
   font-weight: 300;
@@ -100,6 +115,7 @@ button {
   line-height: 1.20;
   font-family: var(--headingFont);
 }
+
 
 .img {
   width: 100%;
@@ -123,9 +139,20 @@ button {
   display: inline-block;
 }
 .btn:hover {
-  background: rgba(2, 34, 2, 0.452);
+  background: var(--main-color);
+  color: var(--dark-color);
   box-shadow: 1px;
+  border-style: solid;
+  border-color: var(--dark-color);
 }
+
+.btn:active  {
+  line-height: 1.20;
+  font-family: var(--headingFont);
+  box-shadow: 2px 2px 5px #05251f;
+ 
+}
+
 .btn-hero {
   font-size: 1.25rem;
   padding: 0.5rem 1.25rem;

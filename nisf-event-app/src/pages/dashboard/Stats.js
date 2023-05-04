@@ -3,32 +3,28 @@ import { StatsContainer, Loading, ChartsContainer } from '../../components'
 import { useAppContext } from '../../context/appContext'
 
 
-
 const Stats = () => {
   const { showStats, isLoading, weeklySubmissions, updateSearch } = useAppContext()
 
-  useEffect (()=> {
+  useEffect(() => {
     showStats()
-    updateSearch({ name: 'searchStatus', value:'all' })
-    updateSearch({ name: 'searchType', value:'all' })
+    updateSearch({ name: 'searchStatus', value: 'all' })
+    updateSearch({ name: 'searchType', value: 'all' })
     // eslint-disable-next-line
   }, [])
 
-  if(isLoading){
+  if (isLoading) {
     return <Loading center />
   }
 
-
-
   return (
-    
     <>
-    <h1>Events</h1>
-    <StatsContainer />
-    
-    {/* only show if not at 0 litsings */}
-    {weeklySubmissions.length > 0 && <ChartsContainer />}
-    
+      <h2>Events Overview</h2>
+      <StatsContainer />
+
+      {/* only show if not at 0 litsings */}
+      {weeklySubmissions.length > 0 && <ChartsContainer />}
+
     </>
   )
 

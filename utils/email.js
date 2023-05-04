@@ -1,7 +1,6 @@
 import nodemailer from 'nodemailer'
 import * as path from 'path'
 import hbs from 'nodemailer-express-handlebars';
-// const hbs = require('nodemailer-express-handlebars');
 
 
 const emailStatusUpdate = async (options) => {
@@ -24,6 +23,7 @@ const emailStatusUpdate = async (options) => {
             partialsDir: path.resolve('./views'),
             defaultLayout: false,
         },
+        //use email template
         viewPath: path.resolve('./views'),
         extName: ".handlebars"
     }

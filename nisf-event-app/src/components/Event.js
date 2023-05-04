@@ -21,8 +21,7 @@ const Event = ({_id, eventTitle, date, eventType, eventLocation, createdAt, stat
         <div className="info">
             <h5>{eventTitle}</h5>
             <p>{eventType}</p>
-        </div>
-      
+        </div> 
     </header>
  
     <div className="content">

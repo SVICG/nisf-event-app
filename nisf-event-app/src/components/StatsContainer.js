@@ -38,13 +38,10 @@ const StatsContainer = () => {
 
   ]
   return (
-    <Wrapper>
-     
-     
+    <Wrapper>    
      {defaultStats.map((item, index) => {
       return <StatItem key={index} {...item} />
-     })}
-     
+     })}     
     </Wrapper>
     
   )

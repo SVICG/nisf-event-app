@@ -16,7 +16,7 @@ const createEvent = async (req, res) => {
         throw new BadRequestError('Please provide all values')
     }
 
-    // req.body.createdBy = req.user.userId
+     req.body.createdBy = req.user.userId
 
     const event = await Event.create(req.body)
     res.status(StatusCodes.CREATED).json({ event })
@@ -101,8 +101,6 @@ const updateEvent = async (req, res) => {
     if (!event) {
         throw new NotFoundError(`Cannot find event ${eventId}`)
     }
-
-
     //will need to use alternative method if needing to fire hooks
     const updatedEvent = await Event.findOneAndUpdate({ _id: eventId }, req.body, {
         new: true,

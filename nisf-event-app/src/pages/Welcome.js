@@ -6,7 +6,6 @@ import { useAppContext } from "../context/appContext"
 import React from "react"
 
 
-
 const Welcome = () => {
     const {user} = useAppContext()
     return(
@@ -14,19 +13,19 @@ const Welcome = () => {
             {user && <Navigate to ='/'/>}
         <Wrapper>
             <nav>
-                <Logo />
+                
             </nav>
             <div className="container page">
                 <div className="intro">
+                <Logo />
                     <h1>NISF <span>Event</span> Manager</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis lectus diam, ultricies in mattis sollicitudin, tincidunt a nisi. 
-                        Donec id quam cursus, cursus nisl at, vehicula justo. Morbi dictum a metus quis tincidunt. 
-                        Sed non ornare purus. Morbi vel tristique lacus. Donec eget nunc nunc. Sed vitae finibus neque. 
-                        Nam ut sapien consequat, maximus orci ut, luctus est.
+                    <p>Established in 2014, NI Science Festival has grown to become the largest celebration of its kind on the 
+                        island of Ireland and in its relatively short lifespan became one of the leading Science Festivals in the 
+                        whole of Europe. We wouldn'nt be able to do that without our fanastic partners and we are so excited that you
+                         would like to host an event.  You can register below to submit a new event or login to submit or amend a submission.
                     </p>
-                    <Link to="/register" className='btn btn-hero'>Login or Register</Link>
+                    <Link to="/register" id = 'reg-btn' className='btn btn-hero'>Login or Register</Link>
                     <p></p>
-                    {/* <Link to="/register" className='btn btn-hero'>Submit an Event</Link> */}
                 </div>
                 <img src={main} alt='adventure' className='img main-img'/>
             </div>

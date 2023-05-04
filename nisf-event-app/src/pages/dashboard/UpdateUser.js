@@ -31,8 +31,6 @@ const UpdateUsers = () => {
     handleChange({ name, value })
   }
 
-
-
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!name || !email || !lastName || !county) {
@@ -79,7 +77,6 @@ const UpdateUsers = () => {
           <FormRow
             type='text'
             name='address'
-            // valueName='orgAddress.address'
             value={address}
             handleChange={handleEventInput}
           />

@@ -16,26 +16,35 @@ const ChartsContainer = () => {
 
   return (
     <Wrapper>
-      <div>
-        <h4>Weekly Submissions</h4>
-        <button type='button' onClick={() => setBarChart(!barChart)}>
-          {barChart ? 'Area Chart' : 'Bar Chart'}
-        </button>
-        {barChart ? <BarChart data={data} /> : <AreaChart data={data} />}
-      </div>
-      <div>
-        <h4>Events by Type</h4>
-        {<PieCharts data={data02} filterName='searchType' />}
-        <h4>Events by County</h4>
-        {<PieCharts data={data03} />}
-      </div>
-      <div>
-        <h4>Events by Theme</h4>
-        {<PieCharts data={data01} />}
-      </div>
-      <div>
+      <div className='charts'>
+        <div className='chart'>
+          <h5>Weekly Submissions</h5>
+          <button type='button' onClick={() => setBarChart(!barChart)}>
+            {barChart ? 'Area Chart' : 'Bar Chart'}
+          </button>
+          {barChart ? <BarChart data={data} /> : <AreaChart data={data} />}
+        </div>
+        <div className='chart'>
+          <h5>Events by Type</h5>
+          {<PieCharts data={data02} filterName='searchType' />}
+        </div>
 
       </div>
+
+
+      <div className='charts'>
+
+        <div className='chart'>
+          <h5>Events by County</h5>
+          {<PieCharts data={data03} />}
+        </div>
+        <div className='chart'>
+          <h5>Events by Theme</h5>
+          {<PieCharts data={data01} />}
+        </div>
+
+      </div>
+
 
     </Wrapper>
 

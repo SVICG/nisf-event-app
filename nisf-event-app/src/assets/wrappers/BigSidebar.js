@@ -25,7 +25,6 @@ display: none;
     }
 
     header {
-        height: 6rem;
         display: flex;
         align-items: center;
         padding-left: 2.5rem

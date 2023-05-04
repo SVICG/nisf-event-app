@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Register, Welcome, Error } from './pages'
 import { AddEvent, AllEvents, SharedLayout, Profile, Stats, Users, UpdateUsers, ProtectedRoute } from './pages/dashboard'
 import AdminRoute from './pages/dashboard/AdminRoute';

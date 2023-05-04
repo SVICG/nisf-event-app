@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Wrapper = styled.section `
+const Wrapper = styled.section`
 
 border-radius: 0.25rem;
 width: 100%;
@@ -8,9 +8,7 @@ width: 100%;
 .form {
     max-width: 100%;
     width: 100%;
-    margin-top: 2rem;
-    
-    
+    margin-top: 2rem;     
 }
 
 .form-center {
@@ -21,9 +19,7 @@ width: 100%;
 .form-center button {
     align-self: center;
     height: 35px;
-    margin-top: 1rem;
-    
-
+    margin-top: 1rem;   
 }
 
 @media (min-width: 992px){
