@@ -9,9 +9,9 @@ import FormRowSelect  from "./FormRowSelect"
 import SearchContainer from "./SearchContainer"
 import EventsContainer from "./EventsContainer"
 import StatsContainer from "./StatsContainer"
-import ChartsContainer from "./ChartsContainer"
+import ChartsComponent from "./ChartsComponent"
 import UserContainer from "./UserContainer"
 import ToggleSwitch from "./ToggleSwitch"
 
 
-export {Logo, ToggleSwitch, FormRow, Alert, Loading, Navbar, BigSidebar, SmallSidebar, FormRowSelect, EventsContainer, SearchContainer, StatsContainer, ChartsContainer, UserContainer}
+export {Logo, ToggleSwitch, FormRow, Alert, Loading, Navbar, BigSidebar, SmallSidebar, FormRowSelect, EventsContainer, SearchContainer, StatsContainer, ChartsComponent, UserContainer}

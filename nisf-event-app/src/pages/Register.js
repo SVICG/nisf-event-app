@@ -4,7 +4,7 @@ import { FormRow, Alert } from "../components"
 import Wrapper from "../assets/wrappers/Register"
 import { useAppContext } from "../context/appContext"
 import { useNavigate } from 'react-router-dom'
-
+// Validation code ammended from https://stackoverflow.com/questions/70140205/passwordincluding-numerics-alphabets-8-words-at-least
 
 const initialState = {
     name: '',
@@ -14,6 +14,8 @@ const initialState = {
     isMember: true,
     isAdmin: false
 }
+
+
 
 const Register = () => {
     const [values, setValues] = useState(initialState)
@@ -30,14 +32,19 @@ const Register = () => {
         setValues({ ...values, isMember: !values.isMember })
     }
 
-
-    const handleChange = (e) => {
-        setValues({ ...values, [e.target.name]: e.target.value })
-        validateInput(e)
-    }
+    const validate_password = (password) => {
+        let check = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
+        if (password.match(check)) {
+           console.log("Your password is strong.");
+           return true;
+        } else {
+          return false
+        }
+      }
 
     // validate password
-    const validateInput = (e) => {
+    const validateInput = (e, isMember) => {
+        if(isMember) return;
         const { name, value } = e.target
         setError(prev => {
             const stateObj = { ...prev, [name]: "" };
@@ -45,8 +52,8 @@ const Register = () => {
                 case "password":
                     if (!value) {
                         stateObj[name] = "Please enter a password";
-                    } else if (value.length < 6  ){
-                        stateObj[name] = "Password must be 6 characters long"
+                    } else if (!validate_password(value) ){
+                        stateObj[name] = "Password be at least 6 characters long and contain at least one number and one special character"
                     }
                      else if (values.confirmPassword && value !== values.confirmPassword) {
                         stateObj["confirmPassword"] = "Passwords do not match.";
@@ -68,7 +75,10 @@ const Register = () => {
             return stateObj;
         })
     }
-
+    const handleChange = (e) => {
+        setValues({ ...values, [e.target.name]: e.target.value })
+        validateInput(e)
+    }
     const onSubmit = (e) => {
         e.preventDefault()
         const { name, lastName, email, password, confirmPassword, isMember, isAdmin } = values
@@ -111,15 +121,16 @@ const Register = () => {
         <form className='form' onSubmit={onSubmit}>
             <h3>{values.isMember ? 'Login' : 'Register'}</h3>
             {showAlert && <Alert />}
-            {/* name input */}
+            {/* name input */} 
             {!values.isMember &&
                 (
                     <FormRow
                         type='text'
-                        label='First Name'
+                        labelText='First Name'
                         name='name'
                         value={values.name}
                         handleChange={handleChange}
+                        required = {true}
                     />
 
                 )
@@ -128,9 +139,11 @@ const Register = () => {
                 (
                     <FormRow
                         type='text'
+                        labelText='Last Name'
                         name='lastName'
                         value={values.lastName}
                         handleChange={handleChange}
+                        required = {true}
                     />
 
                 )
@@ -142,6 +155,7 @@ const Register = () => {
                 name='email'
                 value={values.email}
                 handleChange={handleChange}
+                required = {true}
             />
             {/* password input */}
             <FormRow
@@ -149,9 +163,10 @@ const Register = () => {
                 name='password'
                 value={values.password}
                 handleChange={handleChange}
-                onBlur={validateInput}
+                onBlur={(e) => validateInput(e, values.isMember)}
+                required = {true}
             />
-            {error.password && <span className='err'>{error.password}</span>}
+            {error.password && !values.isMember && <span className='err'>{error.password}</span>}
               
             {!values.isMember &&
                 <FormRow
@@ -160,7 +175,8 @@ const Register = () => {
                     name='confirmPassword'
                     value={values.confirmPassword}
                     handleChange={handleChange}
-                    onBlur={validateInput}
+                    onBlur={(e) => validateInput(e, values.isMember)}
+                    required = {true}
                 />
             }
              {error.confirmPassword && <span className='err'>{error.confirmPassword}</span>}

@@ -27,6 +27,7 @@ import eventsRouter from './routes/eventsRoutes.js'
 import notFoundMiddleware from './middleware/not-found.js'
 import errorHandlerMiddleware from './middleware/error-handler.js'
 
+//cookies pareser
 import cookieParser from 'cookie-parser'
 
 //display method route and response in console
@@ -41,8 +42,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 app.use(express.static(path.resolve(__dirname, './nisf-event-app/build')))
 app.use(express.json());
 
-app.use(helmet())
+//security packages
 app.use(xss())
+app.use(helmet())
 app.use(mongoSanitize())
 
 app.use(cookieParser());

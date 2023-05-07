@@ -1,10 +1,15 @@
 import {
     DISPLAY_ALERT,
     CLEAR_ALERT,
+    TOGGLE_SIDEBAR,
+    TOGGLE_ADMIN,
+    HANDLE_CHANGE,
+    CLEAR_VALUES,
+    CLEAR_FILTERS,
+    CHANGE_PAGE,
     SETUP_USER_BEGIN,
     SETUP_USER_ERROR,
     SETUP_USER_SUCCESS,
-    TOGGLE_SIDEBAR,
     LOGOUT_USER,
     SET_UPDATE_USER,
     EDIT_USER_BEGIN,
@@ -13,10 +18,7 @@ import {
     UPDATE_PROFILE_BEGIN,
     UPDATE_PROFILE_SUCCESS,
     UPDATE_PROFILE_ERROR,
-    TOGGLE_ADMIN,
     DELETE_USER_BEGIN,
-    HANDLE_CHANGE,
-    CLEAR_VALUES,
     CREATE_EVENT_BEGIN,
     CREATE_EVENT_ERROR,
     CREATE_EVENT_SUCCESS,
@@ -33,10 +35,8 @@ import {
     EDIT_STATUS_ERROR,
     SHOW_STATS_BEGIN,
     SHOW_STATS_SUCCESS,
-    CLEAR_FILTERS,
-    CHANGE_PAGE,
-    GET_CURRENT_USER_BEGIN,
-    GET_CURRENT_USER_SUCCESS,
+    GET_USER_BEGIN,
+    GET_USER_SUCCESS,
     GET_USERS_BEGIN,
     GET_USERS_SUCCESS
 } from "./action"
@@ -73,8 +73,8 @@ const reducer = (state, action) => {
             ...state,
             isLoading: false,
             user: action.payload.user,
-            userCounty: action.payload.userCounty,
-            eventCounty: action.payload.eventCounty,
+            // userCounty: action.payload.userCounty,
+            // eventCounty: action.payload.eventCounty,
             isAdmin: action.payload.isAdmin,
             showAlert: true,
             alertType: 'success',
@@ -109,39 +109,23 @@ const reducer = (state, action) => {
     if (action.type === SET_UPDATE_USER) {
         // grab USER from user array we have in the state - if the event matches the one being passed in (payload) then return the details
         const user = state.users.find((user) => user._id === action.payload.id)
-        const {
-            _id,
-            name,
-            lastName,
-            email,
-            organisation,
-            orgAddress: {
-                address,
-                city,
-                postalCode,
-                country,
-                county
-            },
-
-
-        } = user
         
-        // then update the state
         return {
             ...state,
-            isEditing: true,
-            editUserId: _id,
-            name,
-            lastName,
-            email,
-            organisation,
-            address: address,
-            city,
-            postalCode,
-            country,
-            county
-        }
+            isLoading: false,
+            editUserId: user._id,
+            name:user.name,
+            lastName: user.lastName,
+            email: user.email,
+            organisation: user.organisation,
+            address: user.orgAddress.address,
+            city: user.orgAddress.city,
+            postalCode: user.orgAddress.postalCode,
+            country: user.orgAddress.country,
+            county: user.orgAddress.county,
+            showAlert: false,
 
+        };
     }
 
     if (action.type === EDIT_USER_BEGIN) {
@@ -216,10 +200,12 @@ const reducer = (state, action) => {
 
 
     if (action.type === HANDLE_CHANGE) {
+        
         return {
             ...state,
             page: 1,
             [action.payload.name]: action.payload.value
+            
         };
     }
 
@@ -239,6 +225,7 @@ const reducer = (state, action) => {
             capacity: 0,
             description: '',
             admissionPrice: '',
+            date:'',
             startTime: '',
             endTime: '',
             eventAddress1: '',
@@ -429,7 +416,7 @@ const reducer = (state, action) => {
             search: '',
             searchStatus: 'all',
             searchType: 'all',
-            sort: 'newest',
+            sort: 'newest'
         };
     }
 
@@ -440,7 +427,7 @@ const reducer = (state, action) => {
         }
     }
 
-    if (action.type === GET_CURRENT_USER_BEGIN) {
+    if (action.type === GET_USER_BEGIN) {
         return {
             ...state,
             userLoading: true,
@@ -448,14 +435,12 @@ const reducer = (state, action) => {
         }
     }
 
-    if (action.type === GET_CURRENT_USER_SUCCESS) {
+    if (action.type === GET_USER_SUCCESS) {
         return {
             ...state,
             userLoading: false,
             user: action.payload.user,
-            userCounty: action.payload.user.userCounty,
-
-
+            isAdmin: action.payload.admin
         }
     }
 

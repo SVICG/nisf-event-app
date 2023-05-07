@@ -1,5 +1,5 @@
 import Wrapper from "../assets/wrappers/Navbar"
-import { AiTwotoneHome, AiOutlineAlignLeft, AiOutlineUser, AiFillCaretDown } from "react-icons/ai"
+import { AiOutlineAlignLeft, AiOutlineUser, AiFillCaretDown } from "react-icons/ai"
 import { useAppContext } from "../context/appContext"
 import Logo from "./logo"
 import { useState } from "react"
@@ -19,7 +19,7 @@ const Navbar = () => {
 
         <div>
           <Logo />
-          <h3 className="logo-text">{user.name}'s Dashboard</h3>
+          <h4 className="logo-text">{user.name}'s Dashboard</h4>
         </div>
         <div className="btn-container">
           {/* invoke setshow logout */}

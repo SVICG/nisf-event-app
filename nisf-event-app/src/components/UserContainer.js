@@ -31,7 +31,7 @@ const UserContainer = () => {
 
     return (
         <Wrapper>
-            <h2>Users</h2>
+            
             <div className="events">
                 {users.map((user)=>{
                     return <User key={user._id}{...user}/>
@@ -41,5 +41,5 @@ const UserContainer = () => {
         </Wrapper>
     )
 }
-// onClick={() => {if(window.confirm('Are you sure to delete this record?')){ deleteEvent(_id)};}}
+
 export default UserContainer

@@ -1,4 +1,5 @@
 import User from "../models/User.js"
+import Event from "../models/Event.js"
 import { StatusCodes } from 'http-status-codes'
 import { BadRequestError, UnauthenticatedError } from '../customErrors/index.js'
 import attachCookie from "../utils/attachCookie.js"
@@ -17,7 +18,7 @@ const register = async (req, res) => {
     }
 
     const user = await User.create({ name, lastName, email, password })
-    const token = user.createJWT()
+    const token = user.generateJWT()
 
     attachCookie({ res, token });
 
@@ -25,7 +26,14 @@ const register = async (req, res) => {
         user: {
             email: user.email,
             lastName: user.lastName,
-            name: user.name
+            name: user.name,
+            orgAddress: {
+            address: user.orgAddress.address,
+            city: user.orgAddress.city,
+            county: user.orgAddress.county,
+            postalCode: user.orgAddress.postalCode,
+            country: user.orgAddress.country
+            }
         },
     })
 }
@@ -43,7 +51,7 @@ const login = async (req, res) => {
     if (!isPasswordCorrect) {
         throw new UnauthenticatedError('Invalid Credentials');
     }
-    const token = user.createJWT();
+    const token = user.generateJWT();
     //prevent sending sensitive data
     user.password = undefined;
     attachCookie({ res, token });
@@ -71,7 +79,7 @@ const updateUser = async (req, res) => {
 
     await user.save()
 
-    const token = user.createJWT()
+    const token = user.generateJWT()
     attachCookie({ res, token });
     res.status(StatusCodes.OK).json({ user });
 
@@ -113,10 +121,11 @@ const deleteUser = async (req, res) => {
     const { id: editUserId } = req.params
     const user = await User.findOne({ _id: editUserId });
     if (!user) {
-        throw new NotFoundError(`Cannot find event ${eventId}`)
+        throw new NotFoundError(`Cannot find user ${editUserId}`)
     }
 
     await user.remove()
+    await Event.deleteMany({createdBy: editUserId })
 
     res.status(StatusCodes.OK).json({ msg: 'User has been deleted' })
 }

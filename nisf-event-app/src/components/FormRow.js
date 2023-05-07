@@ -1,7 +1,14 @@
 
 
 
-const FormRow = ({ type, name, value, handleChange, labelText, tooltip, helpText }) => {
+const FormRow = ({ type, name, value, handleChange, labelText, tooltip, helpText, required }) => {
+  let requiredInput = false;
+  if(required === false || !required) {
+    
+  } else{
+    requiredInput = true;
+  }
+
   return (
     <div className='form-row'>
       <div className='label-row'>
@@ -20,6 +27,7 @@ const FormRow = ({ type, name, value, handleChange, labelText, tooltip, helpText
         onChange={handleChange}
         autoComplete='on'
         className='form-input'  
+        required ={requiredInput}
       />
 
     </div>

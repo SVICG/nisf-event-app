@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { StatsContainer, Loading, ChartsContainer } from '../../components'
+import { StatsContainer, Loading, ChartsComponent } from '../../components'
 import { useAppContext } from '../../context/appContext'
 
 
@@ -23,7 +23,7 @@ const Stats = () => {
       <StatsContainer />
 
       {/* only show if not at 0 litsings */}
-      {weeklySubmissions.length > 0 && <ChartsContainer />}
+      {weeklySubmissions.length > 0 && <ChartsComponent />}
 
     </>
   )

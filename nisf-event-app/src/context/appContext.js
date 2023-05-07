@@ -1,3 +1,4 @@
+//Context API struture developed from https://www.youtube.com/watch?v=ksDhiLPjyUE&list=PLnHJACx3NwAep5koWkniVHw8PK7dWCO21&index=99
 import React, { useReducer, useContext, useEffect } from 'react'
 import axios from 'axios'
 import reducer from './reducer'
@@ -39,8 +40,8 @@ import {
   SHOW_STATS_SUCCESS,
   CLEAR_FILTERS,
   CHANGE_PAGE,
-  GET_CURRENT_USER_BEGIN,
-  GET_CURRENT_USER_SUCCESS,
+  GET_USER_BEGIN,
+  GET_USER_SUCCESS,
   GET_USERS_BEGIN,
   GET_USERS_SUCCESS
 } from './action'
@@ -93,6 +94,8 @@ const initialState = {
   searchStatus: 'all',
   searchType: 'all',
   sort: 'newest',
+  sortDate: 'newest',
+  searchDate:'',
   sortOptions: ['newest', 'oldest'],
   users: [],
   organisation: '',
@@ -151,10 +154,10 @@ const AppProvider = ({ children }) => {
       const { data } = await axios.post(
         `/api/v1/auth/${endPoint}`,
         currentUser);
-      const { user, county, isAdmin } = data;
+      const { user, isAdmin } = data;
       dispatch({
         type: SETUP_USER_SUCCESS,
-        payload: { user, county, isAdmin, alertText }
+        payload: { user, isAdmin, alertText }
       })
 
     } catch (error) {
@@ -171,7 +174,6 @@ const AppProvider = ({ children }) => {
   const logoutUser = async () => {
     await authFetch.get('/auth/logout')
     dispatch({ type: LOGOUT_USER });
-
   }
 
   //calls reducer to return User details from the state
@@ -333,10 +335,14 @@ const AppProvider = ({ children }) => {
 
   }
 
-  const getEvents = async () => {
-    const { page, search, searchStatus, searchType, sort } = state
-    let url = `/events?page=${page}&status=${searchStatus}&eventType=${searchType}&sort=${sort}`
+  const getEvents = async (sentDate) => {
+    let date = sentDate
+    
+    const { page, search, searchStatus, searchType, sort, searchDate } = state
 
+    let url = `/events?page=${page}&status=${searchStatus}&eventType=${searchType}&sort=${sort}&sortDate=${date}&searchDate=${searchDate}`
+    
+    getUsers();
     if (search) {
       url = url + `&search=${search}`
     }
@@ -474,22 +480,25 @@ const AppProvider = ({ children }) => {
     dispatch({ type: CHANGE_PAGE, payload: { page } })
   }
 
-  const getCurrentUser = async () => {
-    dispatch({ type: GET_CURRENT_USER_BEGIN })
+  const getUser = async () => {
+    dispatch({ type: GET_USER_BEGIN })
     try {
       const { data } = await authFetch('/auth/getCurrentUser')
       const { user, isAdmin } = data
       dispatch({
-        type: GET_CURRENT_USER_SUCCESS,
+        type: GET_USER_SUCCESS,
         payload: { user, isAdmin }
       })
+      //return error if no valid user is returned
     } catch (error) {
       if (error.response.status === 401) return;
       logoutUser();
     }
   };
+
+  //invoke getUser everytime the application starts
   useEffect(() => {
-    getCurrentUser();
+    getUser();
   }, []);
 
   const getUsers = async () => {
@@ -510,10 +519,6 @@ const AppProvider = ({ children }) => {
     }
   }
 
-
-  useEffect(() => {
-    getUsers();
-  }, []);
   // children prop is everything rendered in between the opening and closing tag of the component 
   return (<AppContext.Provider value={{
     ...state,

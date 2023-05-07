@@ -5,7 +5,7 @@ import PieCharts from './PieChart'
 import { useAppContext } from '../context/appContext'
 import Wrapper from '../assets/wrappers/ChartsContainer'
 
-const ChartsContainer = () => {
+const ChartsComponent = () => {
 
   const [barChart, setBarChart] = useState(true)
 
@@ -52,4 +52,4 @@ const ChartsContainer = () => {
 
 }
 
-export default ChartsContainer
+export default ChartsComponent

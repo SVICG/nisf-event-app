@@ -10,11 +10,6 @@ nav {
     align-items: center;
 }
 
-.logo {
-  max-height: 200px;
-  display: flex;
- 
-}
 
 .page {
     min-height: calc(100vh - 6rem);
@@ -28,20 +23,21 @@ nav {
       color: var(--main-color);
     }
   }
-  p {
-    /* color: rgba(2, 34, 2, 0.452); */
-  }
-  .main-img {
+
+  .logo {
     display: none;
   }
   @media (min-width: 992px) {
     .page {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 2fr;
       column-gap: 3rem;
     }
-    .main-img {
+    
+    .logo {
+      max-height: 500px;
       display: flex;
-      
+      margin-left: 5rem;
+    
     }
   }
 

@@ -58,28 +58,24 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         
         default: false
-
-    },
-
-    role: {
-        type: String,
-        default: 'basic'
-
     }
 
 })
 
-//hash user password when 'save' is triggered
+//hash user password when 'save' method is called
 UserSchema.pre('save', async function () {
+    //check for modified paths
     if (!this.isModified('password')) return
+    //generate salt
     const salt = await bcrypt.genSalt(10);
     //hash password
     this.password = await bcrypt.hash(this.password, salt)
 })
 
-UserSchema.methods.createJWT = function () {
+//Use custom instance method
+UserSchema.methods.generateJWT = function () {
     return jwt.sign({ userId: this._id, admin: this.isAdmin }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_LIFETIME,
+        expiresIn: process.env.JWT_EXPIRATION,
     })
 }
 //compare password instance method

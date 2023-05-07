@@ -43,7 +43,7 @@ const User = ({_id, name, lastName, email, orgAddress, isAdmin}) => {
            <Link to='/update-users' className='btn edit-btn'  onClick={()=> setUpdateUser(_id)}>
                Edit
            </Link>
-           <button type='button' className='btn delete-btn' onClick={() => {if(window.confirm('Are you sure to delete this user?')){ deleteUser(_id)};}}>
+           <button type='button' className='btn delete-btn' onClick={() => {if(window.confirm('Are you sure to delete this user? Please be aware this action will also delete all associated events')){ deleteUser(_id)};}}>
                Delete
            </button>
            

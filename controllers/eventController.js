@@ -10,16 +10,31 @@ import emailStatusUpdate from '../utils/email.js';
 
 
 const createEvent = async (req, res) => {
-    const { eventTitle, capacity, eventType, targetAudience, description, date, startTime, endTime, admissionPrice, theme } = req.body;
+    const { eventTitle, capacity, eventType, description, date, startTime, theme } = req.body;
 
     if (!eventTitle || !capacity || !eventType || !description || !date || !startTime || !theme) {
         throw new BadRequestError('Please provide all values')
     }
 
     req.body.createdBy = req.user.userId
-
+    const user = await User.findOne({ _id: req.user.userId });
     const event = await Event.create(req.body)
     res.status(StatusCodes.CREATED).json({ event })
+
+     //email sent to user on approval
+     try {
+        await emailStatusUpdate({
+            type: 'submission',
+            name: user.name,
+            email: user.email,
+            subject: 'Your event has been submitted',
+        });
+
+        res.status(StatusCodes.OK)
+    } catch (err) {
+        console.log(err);
+        return
+    }
 
     res.send('create event')
 }
@@ -27,7 +42,7 @@ const createEvent = async (req, res) => {
 
 const getAllEvents = async (req, res) => {
 
-    const { status, eventType, date, theme, targetAudience, sort, search } = req.query
+    const { status, eventType, sortDate, theme, targetAudience, sort, search } = req.query
     //return events that meet the query
     const user = await User.findOne({ _id: req.user.userId });
     const queryObject = {}
@@ -50,11 +65,18 @@ const getAllEvents = async (req, res) => {
     if (targetAudience && targetAudience !== 'all') {
         queryObject.targetAudience = targetAudience
     }
+
     if (search) {
         queryObject.eventTitle = { $regex: search, $options: 'i' }
     }
-    let results = Event.find(queryObject)
+    let results = Event.find(queryObject).populate('createdBy')
+    if (sortDate === 'newest') {
+        results = results.sort('-date')
+    }
 
+    if (sortDate === 'oldest') {
+        results = results.sort('date')
+    }
     if (sort === 'newest') {
         results = results.sort('-createdAt')
     }
@@ -67,9 +89,9 @@ const getAllEvents = async (req, res) => {
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || 20
     //calculate how many items to skip
-    const skip = (page - 1) * limit
+    const eventSkip = (page - 1) * limit 
 
-    results = results.skip(skip).limit(limit)
+    results = results.skip(eventSkip).limit(limit)
 
     const events = await results
 
@@ -121,6 +143,7 @@ const updateStatus = async (req, res) => {
         //email sent to user on approval
         try {
             await emailStatusUpdate({
+                type: 'approval',
                 name: user.name,
                 email: user.email,
                 subject: 'Your event has been approved',
@@ -143,20 +166,17 @@ const deleteEvent = async (req, res) => {
     if (!event) {
         throw new NotFoundError(`Cannot find event ${eventId}`)
     }
-
     //check permissions - pass in entire user object to check for roles
     checkPermissions(req.user, event.createdBy)
 
     await event.remove()
-
     res.status(StatusCodes.OK).json({ msg: 'Event has been deleted' })
 }
 
 
 const showStats = async (req, res) => {
+    // return all events grouped by status
     let stats = await Event.aggregate([
-        //match events that belong to certain user
-        { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
         { $group: { _id: '$status', count: { $sum: 1 } } },
     ])
     //return stats as an object instead of array
@@ -166,29 +186,27 @@ const showStats = async (req, res) => {
         return acc
 
     }, {})
-    //default for new user / no events
+    //default for no events
     const defaultStats = {
         pending: stats.pending || 0,
         approved: stats.approved || 0,
         declined: stats.declined || 0,
     }
 
+    //return events by county
     let eventCounty = await Event.aggregate([
-        { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
         { $group: { _id: '$eventLocation.eventCounty', count: { $sum: 1 } } },
     ])
-
+    //return events by theme
     let eventTheme = await Event.aggregate([
-        { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
         { $group: { _id: '$theme', count: { $sum: 1 } } },
     ])
+    //return events by type
     let eventTypes = await Event.aggregate([
-        { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
         { $group: { _id: '$eventType', count: { $sum: 1 } } },
     ])
 
     let weeklySubmissions = await Event.aggregate([
-        { $match: { createdBy: mongoose.Types.ObjectId(req.user.userId) } },
         {
             $group: {
                 _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' }, week: { $week: '$createdAt' } },
