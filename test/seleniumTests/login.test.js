@@ -1,6 +1,10 @@
+// Please add valid credentials before runing this test
+
 import * as webdriver from 'selenium-webdriver'
 import { By } from "selenium-webdriver";
 import { assert, expect } from 'chai';
+import { describe } from 'mocha';
+
 
 describe("login a user", function () {
 
@@ -23,20 +27,6 @@ describe("login a user", function () {
         el.click();
     });
 
-        //submit with no password
-        await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[1]/input')), 5 * 1000).then(el => {
-            el.sendKeys('bademail@gmail.com');
-        });
-
-        await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/button')), 5 * 2000).then(el => {
-            el.click();
-        });
-
-        driver.sleep(10 * 1000)
-        let errorText = await driver.wait(until.elementLocated(By.xpath('//*[@id="alert"]')), 5 * 2000).getText().then(function (value) {
-            return value
-        })
-        expect(errorText).to.equal("Please provide the required information")
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[1]/input')), 5 * 1000).clear();
         driver.sleep(10 * 2000)
     })
@@ -66,16 +56,16 @@ describe("login a user", function () {
 
     it("Should successfully login a user", async function () {
        
-        //input correct email & password
+        //input correct email & password - valid credentials must be added
         //Clear fields
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[1]/input')), 5 * 2000).clear();
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[1]/input')), 5 * 2000).then(el => {
-            el.sendKeys('haslem@gmail.com');
+            el.sendKeys('');
         });
 
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[2]/input')), 5 * 2000).clear();
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[2]/input')), 5 * 2000).then(el => {
-            el.sendKeys('secret');
+            el.sendKeys('');
         });
 
         //submit

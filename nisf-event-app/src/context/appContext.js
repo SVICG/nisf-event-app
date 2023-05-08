@@ -2,7 +2,6 @@
 import React, { useReducer, useContext, useEffect } from 'react'
 import axios from 'axios'
 import reducer from './reducer'
-
 import {
   DISPLAY_ALERT,
   CLEAR_ALERT,
@@ -105,8 +104,11 @@ const initialState = {
   country: '',
   county: '',
 }
+
+//Create Context
 const AppContext = React.createContext()
 
+//Create  Provider Component
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -170,7 +172,7 @@ const AppProvider = ({ children }) => {
   };
 
 
-  //calls reducer to logout a user
+  //request to logout a user
   const logoutUser = async () => {
     await authFetch.get('/auth/logout')
     dispatch({ type: LOGOUT_USER });
@@ -181,7 +183,7 @@ const AppProvider = ({ children }) => {
     dispatch({ type: SET_UPDATE_USER, payload: { id } })
   }
 
-
+//request to update User details 
   const updateUser = async (currentUser) => {
     dispatch({ type: UPDATE_PROFILE_BEGIN })
     try {
@@ -203,6 +205,7 @@ const AppProvider = ({ children }) => {
 
   }
 
+  //Request to edit user as an admin user
   const editUser = async () => {
 
     dispatch({ type: EDIT_USER_BEGIN })
@@ -243,6 +246,7 @@ const AppProvider = ({ children }) => {
     clearAlert();
   }
 
+  //request to amend a users admin status
   const toggleAdmin = async (id, isOn) => {
     dispatch({ type: TOGGLE_ADMIN })
     try {
@@ -256,6 +260,7 @@ const AppProvider = ({ children }) => {
     }
   }
 
+  
   const deleteUser = async (userId) => {
     dispatch({ type: DELETE_USER_BEGIN })
     try {
@@ -266,6 +271,7 @@ const AppProvider = ({ children }) => {
     }
   }
 
+  //Handle change function use in forms - updates state
   const handleChange = ({ name, value }) => {
     dispatch({ type: HANDLE_CHANGE, payload: { name, value } })
   }
@@ -274,6 +280,7 @@ const AppProvider = ({ children }) => {
     dispatch({ type: SET_SEARCH_STATUS, payload: { name, value } })
   }
 
+  //updates state to clear form fields
   const clearValues = () => {
     dispatch({
       type: CLEAR_VALUES
@@ -281,6 +288,7 @@ const AppProvider = ({ children }) => {
 
   }
 
+  //Request to create a new event
   const createEvent = async () => {
     dispatch({ type: CREATE_EVENT_BEGIN })
     try {
@@ -337,11 +345,11 @@ const AppProvider = ({ children }) => {
 
   const getEvents = async (sentDate) => {
     let date = sentDate
-    
+    //get search paramater from state
     const { page, search, searchStatus, searchType, sort, searchDate } = state
-
+    //add to url params
     let url = `/events?page=${page}&status=${searchStatus}&eventType=${searchType}&sort=${sort}&sortDate=${date}&searchDate=${searchDate}`
-    
+    //return users for admin view
     getUsers();
     if (search) {
       url = url + `&search=${search}`
@@ -365,6 +373,7 @@ const AppProvider = ({ children }) => {
     }
     clearAlert();
   }
+
 
   const setEditEvent = (id) => {
     dispatch({ type: SET_EDIT_EVENT, payload: { id } })
@@ -479,7 +488,8 @@ const AppProvider = ({ children }) => {
   const changePage = (page) => {
     dispatch({ type: CHANGE_PAGE, payload: { page } })
   }
-
+  
+  //called when logging in or page is refreshed
   const getUser = async () => {
     dispatch({ type: GET_USER_BEGIN })
     try {

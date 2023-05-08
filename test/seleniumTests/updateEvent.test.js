@@ -1,3 +1,4 @@
+// Please add valid login credentials before running this test
 import * as webdriver from 'selenium-webdriver'
 import { By } from "selenium-webdriver";
 import { Select } from 'selenium-webdriver';
@@ -21,13 +22,24 @@ describe("Edit an event", function () {
         });
         //login
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[1]/input')), 5 * 2000).then(el => {
-            el.sendKeys('haslem@gmail.com');
+            el.sendKeys('');
         });
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[2]/input')), 5 * 2000).then(el => {
-            el.sendKeys('secret');
+            el.sendKeys('');
         });
         //submit login
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/button')), 5 * 3000).then(el => {
+            el.click();
+        });
+        await driver.sleep(5 * 1000)
+        let url = await driver.getCurrentUrl();
+        expect(url).to.equal("http://localhost:3000/stats")
+    })
+
+    it("should navigate to the 'all-events' page", async function () {
+    
+        //navigate to all-events page
+        await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/main/aside[2]/div/div/div/a[2]')), 5 * 3000).then(el => {
             el.click();
         });
         await driver.sleep(5 * 1000)

@@ -8,6 +8,7 @@ import { dirname } from 'path'
 import { fileURLToPath } from 'url'
 import path from 'path'
 
+//import security packages
 import helmet from 'helmet'
 import xss from 'xss-clean'
 import mongoSanitize from 'express-mongo-sanitize'
@@ -35,9 +36,9 @@ if (process.env.NODE_ENV !== 'prodution' || !process.env.NODE_ENV === 'test') {
     app.use(morgan('dev'))
 }
 
-
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
+//Load middleware
 //built-in middleware
 app.use(express.static(path.resolve(__dirname, './nisf-event-app/build')))
 app.use(express.json());

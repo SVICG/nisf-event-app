@@ -18,6 +18,39 @@ Back End Port: http://localhost:5000/
 - Open VSCode and open the cloned repository
 - In root directory in terminal type `npm run setup-production` 
 
+
+## File Structure
+
+nisf-event-app - Client application
+* public - Holds the static files
+* src
+  * assets - Holds CSS Wrappers, images and fonts
+  * components - Holds all the React components 
+  * context - Holds the Context API, Reducer and Actions for managing state
+  * pages - conatins the main page components
+  * utils - Holds utility functions
+  * index.css - Root CSS for the application
+  * App.js - Renders broswer routes
+  * indes.js - Renders entire application
+* package.json - Contains descriptive and functional metadata about a project
+
+Server
+* controllers - Hp;ds the functions to process route requests
+* customErrors -  Customised errors to provide a more detailed response
+* db - Holds MongoDB connect method
+* middleware - Holds funcxtions that execute during the processing of HTTP requests
+* models - Holds MongoDB data models
+* routes - Holds routes that associate a HTTP request with the relevant function
+* test - Holds test files
+* utils - Holds utility functions
+* views - Holds email templates
+* excelToJason.js - Hold fucntion to convert a CSV file to JSON objects
+* package.json - npm configuration file
+* populate.js - Function the populate the database with events if JSON objects
+* populateUsers.js - Function the populate the database with users if JSON objects
+* server.js - Defines npm behaviours and loads middleware.
+
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -42,14 +75,3 @@ Builds the app for production to the `build` folder.\
 It installs all dependencies and libraries in the root and nisf-event-app client
 
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-#

@@ -9,6 +9,7 @@ const ChartsComponent = () => {
 
   const [barChart, setBarChart] = useState(true)
 
+  //data to render charts
   const { weeklySubmissions: data } = useAppContext()
   const { eventTheme: data01 } = useAppContext()
   const { eventTypes: data02 } = useAppContext()

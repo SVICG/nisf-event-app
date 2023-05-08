@@ -11,7 +11,7 @@
     "server": "nodemon server --ignore client",
     "client": "npm start --prefix nisf-event-app",
     "start": "concurrently --kill-others-on-fail \" npm run server\" \" npm run client\"",
-    "test": "cross-env NODE_ENV=test mocha --reporter mochawesome --timeout 5000 test/routes/users.test.js",
+    "test": "cross-env NODE_ENV=test mocha --reporter mochawesome --timeout 5000 test/routes/*.test.js",
     "coverage": "cross-env NODE_ENV=test c8 --check-coverage true --watchAll=false mocha --timeout 5000 test/routes/*.test.js"
   },
   "keywords": [],

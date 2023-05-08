@@ -1,3 +1,4 @@
+// Please add valid login credentials before running this test
 import * as webdriver from 'selenium-webdriver'
 import { By } from "selenium-webdriver";
 import { Select } from 'selenium-webdriver';
@@ -21,12 +22,12 @@ describe("submit a new event", function () {
         driver.wait(until.elementLocated(By.xpath('//*[@id="reg-btn"]')), 5 * 1000).then(el => {
             el.click();
         });
-        //login
+        //login - please add valid credentials
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[1]/input')), 5 * 2000).then(el => {
-            el.sendKeys('haslem@gmail.com');
+            el.sendKeys('');
         });
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[2]/input')), 5 * 2000).then(el => {
-            el.sendKeys('secret');
+            el.sendKeys('');
         });
         //submit login
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/button')), 5 * 3000).then(el => {
@@ -67,10 +68,11 @@ describe("submit a new event", function () {
         driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/main/div/div/section/form[1]/div[1]/div[4]/input')), 5 * 1000).then(el => {
             el.sendKeys('Lisburn');
         });
+        
         const selectElement = driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/main/div/div/section/form[1]/div[1]/div[5]/select')), 5 * 1000)
         const select = new Select(selectElement)
-        await select.selectByVisibleText('Down')
-
+        await select.selectByVisibleText('Antrim')
+        
         driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/main/div/div/section/form[1]/div[1]/div[6]/input')), 5 * 1000).then(el => {
             el.sendKeys('BT32 7YG');
         });
@@ -97,6 +99,9 @@ describe("submit a new event", function () {
             for (i = 0; i < 3; i++) {
                 el.click();
             }
+        });
+        await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/main/div/div/section/form[1]/div[1]/div[12]/div[2]/div/div/div/div[1]/div[2]/div[1]/div/div[5]/div[5]/span')), 5 * 1000).then(el=>{
+            el.click();
         });
         await driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/main/div/div/section/form[1]/div[1]/div[12]/div[2]/div/div/div/div[1]/div[2]/div[1]/div/div[4]/div[6]/span')), 5 * 3000).then(el => {
             el.click();

@@ -1,7 +1,7 @@
 import * as webdriver from 'selenium-webdriver'
 import { By } from "selenium-webdriver";
 import { expect } from 'chai';
-
+import { describe } from 'mocha';
 
 
 describe("register a user", function() {
@@ -39,7 +39,7 @@ describe("register a user", function() {
         el.sendKeys('Waid');
     });
     driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[3]/input')), 5 * 1000).then(el => {
-        el.sendKeys('waidmark@gmail.com');
+        el.sendKeys('waidmark03@gmail.com');
     });
     driver.wait(until.elementLocated(By.xpath('//*[@id="root"]/section/form/div[4]/input')), 5 * 1000).then(el => {
         el.sendKeys('password12!');
